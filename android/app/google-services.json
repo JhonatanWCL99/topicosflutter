@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "190596727097",
+    "project_id": "topicos-android-25b3c",
+    "storage_bucket": "topicos-android-25b3c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190596727097:android:33c6608b7731c74ad368e8",
+        "android_client_info": {
+          "package_name": "com.example.registro_login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190596727097-5ptq29ma6fp6aluagaslq0frio23ogru.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWmTY9Fn25sdCgSfjj8OfusC4vm4KKHXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190596727097-5ptq29ma6fp6aluagaslq0frio23ogru.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
