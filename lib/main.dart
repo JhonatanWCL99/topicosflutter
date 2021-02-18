@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart" as firebase_core;
+import 'package:registro_login/screens/create-new-account-3.dart';
+import 'package:registro_login/screens/create-new-account-4.dart';
 import 'package:registro_login/screens/create-new-account.dart';
 import 'package:registro_login/screens/create-new_account-fin.dart';
 import 'package:registro_login/screens/forgot-password.dart';
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       initialRoute: "/",
       routes: {
-        '/': (context) => LoginScreen(),
+        '/': (context) => CreateNewAccount3(),
         'ForgotPassword': (context) => ForgotPassword(),
         'CreateNewAccount': (context) => CreateNewAccount(),
         'CreateNewAccountFin': (context) => CreateNewAccountFin()

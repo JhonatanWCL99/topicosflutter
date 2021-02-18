@@ -115,38 +115,42 @@ class StateCreateAccount extends State<CreateNewAccountFul> {
                 ),
                 Column(
                   children: [
-                    TextInputField(
-                      controlador: ci,
-                      icon: FontAwesomeIcons.pencilAlt,
-                      hint: 'Carnet de identidad',
-                      inputType: TextInputType.name,
-                      inputAction: TextInputAction.next,
-                    ),
-
-                    TextInputField(
-                      controlador: nombre,
-                      icon: FontAwesomeIcons.pencilAlt,
-                      hint: 'Nombre y apellido',
-                      inputType: TextInputType.name,
-                      inputAction: TextInputAction.next,
-                    ),
-                    // TextInputField(
-                    //   icon: FontAwesomeIcons.pencilAlt,
-                    //   hint: 'Apellidos',
-                    //   inputAction: TextInputAction.next,
-                    // ),
-                    TextInputField(
-                      controlador: direccion,
-                      icon: FontAwesomeIcons.pencilAlt,
-                      hint: 'Direccion',
-                      inputAction: TextInputAction.next,
-                    ),
-                    TextInputField(
-                      controlador: telefono,
-                      icon: FontAwesomeIcons.pencilAlt,
-                      hint: 'Telefono',
-                      inputAction: TextInputAction.done,
-                    ),
+                    TextFormField(
+                        controller: ci,
+                        decoration: buildInputDecoration(
+                            Icons.business_center_rounded,
+                            "Carnet de Identidad"),
+                        validator: (String value) {
+                          if (value.isEmpty) return "Escriba su CI PorFavor";
+                          return null;
+                        }),
+                    TextFormField(
+                        controller: nombre,
+                        decoration: buildInputDecoration(
+                            Icons.person, "Nombre y apellido"),
+                        validator: (String value) {
+                          if (value.isEmpty)
+                            return "Escriba su Nombre PorFavor";
+                          return null;
+                        }),
+                    TextFormField(
+                        controller: direccion,
+                        decoration:
+                            buildInputDecoration(Icons.home, "Direccion"),
+                        validator: (String value) {
+                          if (value.isEmpty)
+                            return "Escriba su Direccion PorFavor";
+                          return null;
+                        }),
+                    TextFormField(
+                        controller: telefono,
+                        decoration:
+                            buildInputDecoration(Icons.phone_sharp, "Telefono"),
+                        validator: (String value) {
+                          if (value.isEmpty)
+                            return "Escriba su Telefono PorFavor";
+                          return null;
+                        }),
                     Row(children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 40),

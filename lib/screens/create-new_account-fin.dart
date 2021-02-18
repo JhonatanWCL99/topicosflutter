@@ -28,6 +28,9 @@ class CreateNewAccountFul extends StatefulWidget {
 }
 
 class StateCreateAccount extends State<CreateNewAccountFul> {
+  TextEditingController nombreUsuario;
+  TextEditingController correo;
+  TextEditingController contrasena;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -39,45 +42,6 @@ class StateCreateAccount extends State<CreateNewAccountFul> {
               children: [
                 SizedBox(
                   height: size.width * 0.1,
-                ),
-                Stack(
-                  children: [
-                    Center(
-                      child: ClipOval(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                          child: CircleAvatar(
-                            radius: size.width * 0.14,
-                            backgroundColor: Colors.grey[400].withOpacity(
-                              0.4,
-                            ),
-                            child: Icon(
-                              FontAwesomeIcons.userCircle,
-                              color: kWhite,
-                              size: size.width * 0.20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: size.height * 0.08,
-                      left: size.width * 0.56,
-                      child: Container(
-                        height: size.width * 0.1,
-                        width: size.width * 0.1,
-                        decoration: BoxDecoration(
-                          color: kGreen,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: kWhite, width: 2),
-                        ),
-                        child: Icon(
-                          FontAwesomeIcons.arrowUp,
-                          color: kWhite,
-                        ),
-                      ),
-                    )
-                  ],
                 ),
                 SizedBox(
                   // height: size.width * 0.1,
@@ -91,22 +55,34 @@ class StateCreateAccount extends State<CreateNewAccountFul> {
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold)),
                     ),
-                    TextInputField(
-                      icon: FontAwesomeIcons.pencilAlt,
-                      hint: 'Nombre de usuario',
-                      inputType: TextInputType.name,
-                      inputAction: TextInputAction.next,
-                    ),
+                    TextFormField(
+                        controller: nombreUsuario,
+                        decoration:
+                            buildInputDecoration(Icons.person, "Nombre"),
+                        validator: (String value) {
+                          if (value.isEmpty)
+                            return "Escriba su Nombre PorFavor";
+                          return null;
+                        }),
                     Padding(
                       padding: const EdgeInsets.only(right: 50.0),
                       child: Text("Ingrese su correo electrónico:",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold)),
                     ),
-                    TextInputField(
-                      icon: FontAwesomeIcons.pencilAlt,
-                      hint: 'Correo',
-                      inputAction: TextInputAction.next,
+                    TextFormField(
+                      controller: correo,
+                      decoration: buildInputDecoration(Icons.email, "Correo"),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return 'Please a Enter';
+                        }
+                        if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                            .hasMatch(value)) {
+                          return 'Escriba su Correo PorFavor';
+                        }
+                        return null;
+                      },
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 100.0),
@@ -114,22 +90,30 @@ class StateCreateAccount extends State<CreateNewAccountFul> {
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold)),
                     ),
-                    PasswordInput(
-                      icon: FontAwesomeIcons.pencilAlt,
-                      hint: 'Contraseña',
-                      inputAction: TextInputAction.done,
-                    ),
+                    TextFormField(
+                        controller: contrasena,
+                        decoration: buildInputDecoration(
+                            FontAwesomeIcons.lock, "Contraseña"),
+                        validator: (String value) {
+                          if (value.isEmpty)
+                            return "Escriba su Contraseña PorFavor";
+                          return null;
+                        }),
                     Padding(
                       padding: const EdgeInsets.only(right: 88.0),
                       child: Text("Confirme su contraseña:",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold)),
                     ),
-                    PasswordInput(
-                      icon: FontAwesomeIcons.pencilAlt,
-                      hint: 'Contraseña',
-                      inputAction: TextInputAction.done,
-                    ),
+                    TextFormField(
+                        controller: contrasena,
+                        decoration: buildInputDecoration(
+                            FontAwesomeIcons.lock, "Contraseña"),
+                        validator: (String value) {
+                          if (value.isEmpty)
+                            return "Escriba su Contraseña PorFavor";
+                          return null;
+                        }),
                     SizedBox(
                       height: 10,
                     ),

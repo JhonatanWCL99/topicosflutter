@@ -9,6 +9,32 @@ import 'package:registro_login/widgets/widgets.dart';
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xff5DBFA6),
+          elevation: 0,
+          title: Text(
+            'Registro',
+            style: kBodyText,
+          ),
+          centerTitle: true,
+        ),
+        body: Login());
+  }
+}
+
+class Login extends StatefulWidget {
+  @override
+  StateLogin createState() => StateLogin();
+}
+
+class StateLogin extends State<Login> {
+  TextEditingController nombre;
+  TextEditingController correo;
+  TextEditingController contrasena;
+
+  @override
+  Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Stack(
       children: [
@@ -46,17 +72,36 @@ class LoginScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TextInputField(
-                    icon: FontAwesomeIcons.envelope,
-                    hint: 'Correo',
-                    inputType: TextInputType.emailAddress,
-                    inputAction: TextInputAction.next,
+                  TextFormField(
+                      controller: nombre,
+                      decoration: buildInputDecoration(Icons.person, "Nombre"),
+                      validator: (String value) {
+                        if (value.isEmpty) return "Escriba su Nombre PorFavor";
+                        return null;
+                      }),
+                  TextFormField(
+                    controller: correo,
+                    decoration: buildInputDecoration(Icons.email, "Correo"),
+                    validator: (String value) {
+                      if (value.isEmpty) {
+                        return 'Please a Enter';
+                      }
+                      if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                          .hasMatch(value)) {
+                        return 'Escriba su Correo PorFavor';
+                      }
+                      return null;
+                    },
                   ),
-                  PasswordInput(
-                    icon: FontAwesomeIcons.lock,
-                    hint: 'Contraseña',
-                    inputAction: TextInputAction.done,
-                  ),
+                  TextFormField(
+                      controller: contrasena,
+                      decoration: buildInputDecoration(
+                          FontAwesomeIcons.lock, "Contraseña"),
+                      validator: (String value) {
+                        if (value.isEmpty)
+                          return "Escriba su Contraseña PorFavor";
+                        return null;
+                      }),
                   GestureDetector(
                     onTap: () => Navigator.pushNamed(context, 'ForgotPassword'),
                     child: Text(
