@@ -24,16 +24,16 @@ class CreateNewAccount extends StatelessWidget {
           ),
           centerTitle: true,
         ),
-        body: CreateNewAccountFul());
+        body: DatosBasicos());
   }
 }
 
-class CreateNewAccountFul extends StatefulWidget {
+class DatosBasicos extends StatefulWidget {
   @override
   StateCreateAccount createState() => StateCreateAccount();
 }
 
-class StateCreateAccount extends State<CreateNewAccountFul> {
+class StateCreateAccount extends State<DatosBasicos> {
   List listaSexo = ["M", "F"];
   String _selectSexo;
   File image;

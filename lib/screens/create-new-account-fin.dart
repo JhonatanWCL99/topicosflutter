@@ -18,16 +18,16 @@ class CreateNewAccountFin extends StatelessWidget {
           ),
           centerTitle: true,
         ),
-        body: CreateNewAccountFul());
+        body: Fin());
   }
 }
 
-class CreateNewAccountFul extends StatefulWidget {
+class Fin extends StatefulWidget {
   @override
-  StateCreateAccount createState() => StateCreateAccount();
+  StateCreateAccountFin createState() => StateCreateAccountFin();
 }
 
-class StateCreateAccount extends State<CreateNewAccountFul> {
+class StateCreateAccountFin extends State<Fin> {
   TextEditingController nombreUsuario;
   TextEditingController correo;
   TextEditingController contrasena;

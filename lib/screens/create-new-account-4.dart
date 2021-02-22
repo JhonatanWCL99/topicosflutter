@@ -3,7 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 //import 'package:geolocator/geolocator.dart';
 import 'package:registro_login/pallete.dart';
 
-class CreateNewAccount3 extends StatelessWidget {
+class CreateNewAccount4 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -21,10 +21,10 @@ class CreateNewAccount3 extends StatelessWidget {
 
 class Ubicacion extends StatefulWidget {
   @override
-  Ubc createState() => Ubc();
+  StateUbc createState() => StateUbc();
 }
 
-class Ubc extends State<Ubicacion> {
+class StateUbc extends State<Ubicacion> {
   GoogleMapController controladorMapa;
   String buscarDireccion;
 
@@ -71,13 +71,13 @@ class Ubc extends State<Ubicacion> {
     );
   }
 
-  //Funcion que creamos para busqueda por direccion
-  //barraBusqueda() {
-  //Geolocator().placemarkFromAddress(buscarDireccion).then((result) {
+  // Funcion que creamos para busqueda por direccion
+  // barraBusqueda() {
+  // Geolocator().placemarkFromAddress(buscarDireccion).then((result) {
   //  controladorMapa.animateCamera(CameraUpdate.newCameraPosition(
   //    CameraPosition(
   //      target: LatLng(
-//                  result[0].position.latitude, result[0].position.longitude),
+  //                result[0].position.latitude, result[0].position.longitude),
   //            zoom: 10.0)));
   // });
   // }
