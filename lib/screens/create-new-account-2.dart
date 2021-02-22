@@ -50,37 +50,42 @@ class StateCategoria extends State<Categorias> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.only(top: 20, left: 40),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
-              height: 30,
+              height: 40,
               child: FutureBuilder<List>(
                   future: _servicios,
                   builder:
                       (BuildContext context, AsyncSnapshot<List> snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
+                        scrollDirection: Axis.horizontal,
                         itemBuilder: (BuildContext context, index) {
                           if (index < snapshot.data.length){
                               seleccionado.add(false);
-                            return FilterChip(
-                              // selected: seleccionado[index],
-                              label: Text(
-                                snapshot.data[index].nombre,
-                                style: TextStyle(color: Colors.white),
+                            return Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FilterChip(
+                                // selected: seleccionado[index],
+                                label: Text(
+                                  snapshot.data[index].nombre,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                // avatar: FlutterLogo(),
+                                elevation: 10,
+                                pressElevation: 5,
+                                shadowColor: Colors.teal,
+                                backgroundColor: Colors.black54,
+                                selectedColor: Colors.blue,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    // seleccionado[index] = selected;
+                                  });
+                                },
                               ),
-                              avatar: FlutterLogo(),
-                              elevation: 10,
-                              pressElevation: 5,
-                              shadowColor: Colors.teal,
-                              backgroundColor: Colors.black54,
-                              selectedColor: Colors.blue,
-                              onSelected: (bool selected) {
-                                setState(() {
-                                  // seleccionado[index] = selected;
-                                });
-                              },
                             );
                           }
                         },
@@ -100,9 +105,12 @@ class StateCategoria extends State<Categorias> with TickerProviderStateMixin {
                 Navigator.pushNamed(context, 'CreateNewAccount3');
               },
               child: Container(
-                child: Text(
-                  'Continuar',
-                  style: kBodyText,
+                child: Padding(
+                  padding: const EdgeInsets.only(top:40.0),
+                  child: Text(
+                    'Continuar',
+                    style: kBodyText,
+                  ),
                 ),
                 decoration: BoxDecoration(
                     border:
