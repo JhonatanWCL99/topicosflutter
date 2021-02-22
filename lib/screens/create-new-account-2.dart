@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:registro_login/api.dart';
+import 'package:registro_login/modelos/servicio.dart';
 import 'package:registro_login/pallete.dart';
 import 'package:registro_login/data/my_database.dart';
 
@@ -30,7 +32,8 @@ class Categorias extends StatefulWidget {
 class StateCategoria extends State<Categorias> with TickerProviderStateMixin {
   MyDatabase _myDatabase = MyDatabase();
   List<String> opciones = ['Carpintero', 'Electricista', 'Plomero'];
-  List<bool> seleccionado = [false, false, false];
+  List<bool> seleccionado = [];
+  Future<List<Servicio>> _servicios;
 
   @override
   void initState() {
@@ -38,37 +41,9 @@ class StateCategoria extends State<Categorias> with TickerProviderStateMixin {
         .initialize()
         .then((value) => '..................database intialize');
     super.initState();
-  }
 
-  Widget _buildChips() {
-    List<Widget> chips = new List();
-
-    for (int i = 0; i < opciones.length; i++) {
-      FilterChip filterChip = FilterChip(
-        selected: seleccionado[i],
-        label: Text(
-          opciones[i],
-          style: TextStyle(color: Colors.white),
-        ),
-        avatar: FlutterLogo(),
-        elevation: 10,
-        pressElevation: 5,
-        shadowColor: Colors.teal,
-        backgroundColor: Colors.black54,
-        selectedColor: Colors.blue,
-        onSelected: (bool selected) {
-          setState(() {
-            seleccionado[i] = selected;
-          });
-        },
-      );
-
-      chips.add(Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: filterChip,
-      ));
-    }
-    return ListView(scrollDirection: Axis.horizontal, children: chips);
+    Api _api = new Api();
+    _servicios = _api.getServicios();
   }
 
   @override
@@ -80,7 +55,37 @@ class StateCategoria extends State<Categorias> with TickerProviderStateMixin {
           children: <Widget>[
             Container(
               height: 30,
-              child: _buildChips(),
+              child: FutureBuilder<List>(
+                  future: _servicios,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<List> snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index <= snapshot.data.length - 1)
+                            seleccionado.add(false);
+                          FilterChip filterChip = FilterChip(
+                            selected: seleccionado[index],
+                            label: Text(
+                              snapshot.data[index].nombre,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            avatar: FlutterLogo(),
+                            elevation: 10,
+                            pressElevation: 5,
+                            shadowColor: Colors.teal,
+                            backgroundColor: Colors.black54,
+                            selectedColor: Colors.blue,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                seleccionado[index] = selected;
+                              });
+                            },
+                          );
+                        },
+                      );
+                    }
+                  }),
             ),
             GestureDetector(
               onTap: () {

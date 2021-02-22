@@ -27,7 +27,7 @@ class Horarios extends StatefulWidget {
 }
 
 class StateHorario extends State<StateHorario> {
-    List<DateTime> opciones = [];
+  List<DateTime> opciones = [];
   List<bool> seleccionado = [false, false, false];
 
   Widget _buildChips() {
