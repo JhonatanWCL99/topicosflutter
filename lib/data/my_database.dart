@@ -30,6 +30,9 @@ class MyDatabase {
           'ci INTEGER not null, nombre TEXT not null,direccion TEXT not null, ' +
           'estado TEXT not null, img_perfil TEXT not null, telefono INTEGER not null, ' +
           'sexo TEXT not null, tipo TEXT not null)');
+      db.execute(
+          'CREATE TABLE categorias (id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+              'nombre TEXT not null)');
     });
     return database;
   }
