@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:registro_login/pallete.dart';
-import 'package:registro_login/widgets/rounded-button.dart';
 import 'package:registro_login/widgets/text-field-input.dart';
 
 class ForgotPassword extends StatelessWidget {

@@ -33,9 +33,12 @@ class RegistroServiciosFul extends StatefulWidget {
 
 class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProviderStateMixin {
   MyDatabase _myDatabase = MyDatabase();
-  List<String> opciones = ['Carpintero', 'Electricista', 'Plomero'];
-  List<bool> seleccionado = [];
+
+  
   Future<List<Servicio>> _servicios;
+  List<String> _serviciosR = [];
+  List<bool> _selectServicio = [];
+  List<bool> _selectServicioR = [];
 
   @override
   void initState() {
@@ -44,6 +47,7 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
         .then((value) => '..................database intialize');
     super.initState();
 
+    _drawerSelectedP();
     Api _api = new Api();
     _servicios = _api.getServicios();
   }
@@ -51,64 +55,117 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20, left: 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              height: 40,
-              child: FutureBuilder<List>(
-                  future: _servicios,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<List> snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (BuildContext context, index) {
-                          if (index < snapshot.data.length){
-                              seleccionado.add(false);
-                            return Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: FilterChip(
-                                // selected: seleccionado[index],
-                                label: Text(
-                                  snapshot.data[index].nombre,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                // avatar: FlutterLogo(),
-                                elevation: 10,
-                                pressElevation: 5,
-                                shadowColor: Colors.teal,
-                                backgroundColor: Colors.black54,
-                                selectedColor: Colors.blue,
-                                onSelected: (bool selected) {
-                                  setState(() {
-                                    // seleccionado[index] = selected;
-                                  });
-                                },
-                              ),
-                            );
-                          }
-                        },
-                      );
-                    }else return Text("-------");
-                  }),
-            ),
-            RoundedButton(
-                        flatButton: FlatButton(
-                              onPressed: (){  
-                                Navigator.of(context).pushNamed("RegistroAutentificacion");
-                                },
-                              child: Text(
-                                'Continuar',
-                                style: kBodyText.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                        ),
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 40),
+            child: _drawerServicio(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 380.0),
+            child: RoundedButton(
+              flatButton: FlatButton(
+                    onPressed: (){ 
+                      _getSelected(); 
+                      // Navigator.of(context).pushNamed("RegistroHorarios");
+                      },
+                    child: Text(
+                      'Continuar',
+                      style: kBodyText.copyWith(fontWeight: FontWeight.bold),
                     ),
-          ],
-        ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  _drawerServicio(){
+    return Container(
+      height: 40,
+      child: FutureBuilder<List>(
+          future: _servicios,
+          builder:
+              (BuildContext context, AsyncSnapshot<List> snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, index) {
+                  if (index < snapshot.data.length){
+                      _selectServicio.add(false);
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 15.0),
+                      child:_drawerSelected(snapshot, index)
+                    );
+                  } return null;
+                },
+              );
+            }else return Text("----");
+          }),
+    );
+  }
+
+  _getServicios(AsyncSnapshot<List> snapshot, i){
+    _serviciosR.add(snapshot.data[i].nombre);
+    return FilterChip(
+      selected: _selectServicio[i],
+      label: Text(
+        snapshot.data[i].nombre,
+        style: TextStyle(color: Colors.white),
+      ),
+      // avatar: FlutterLogo(),
+      elevation: 10,
+      pressElevation: 5,
+      shadowColor: Colors.teal,
+      backgroundColor: Colors.black54,
+      selectedColor: Colors.blue,
+      onSelected: (bool selected) {
+        setState(() {
+          _selectServicio[i] = selected;
+        });
+      },
+    );
+  }
+
+  _getSelected(){
+    List<String> L = List();
+    for (var i = 0; i < _selectServicio.length; i++) {
+      if(_selectServicio[i] == true) L.add(_serviciosR[i]);
+    }
+    print(L);
+  }
+
+  _drawerSelected(AsyncSnapshot<List> snapshot, i){
+    return FilterChip(
+      selected: _selectServicioR[i],
+      label: Text(
+        snapshot.data[i].nombre,
+        style: TextStyle(color: Colors.white),
+      ),
+      // avatar: FlutterLogo(),
+      elevation: 10,
+      pressElevation: 5,
+      shadowColor: Colors.teal,
+      backgroundColor: Colors.black54,
+      selectedColor: Colors.blue,
+      onSelected: (bool selected) {
+        setState(() {
+          _selectServicio[i] = selected;
+        });
+      },
+    );
+  }
+
+  _drawerSelectedP(){
+    List<String> L = List();
+    L.addAll(['Carpintería', 'Plomería']);
+    for (var i = 0; i < L.length; i++) {
+      for (var j = 0; j < _serviciosR.length; j++) {
+          if(L[i] == _serviciosR[j])
+            _selectServicioR[i] = true;
+          else _selectServicioR[i] = false;
+      }
+    }
   }
 }
