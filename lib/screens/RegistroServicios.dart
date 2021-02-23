@@ -37,8 +37,9 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
   
   Future<List<Servicio>> _servicios;
   List<String> _serviciosR = [];
+  
   List<bool> _selectServicio = [];
-  List<bool> _selectServicioR = [];
+  List<bool> _selectServicioR = [false,false,false,false,false];
 
   @override
   void initState() {
@@ -47,7 +48,6 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
         .then((value) => '..................database intialize');
     super.initState();
 
-    _drawerSelectedP();
     Api _api = new Api();
     _servicios = _api.getServicios();
   }
@@ -87,16 +87,21 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
       child: FutureBuilder<List>(
           future: _servicios,
           builder:
-              (BuildContext context, AsyncSnapshot<List> snapshot) {
+              (BuildContext context, AsyncSnapshot<List> snapshot) { 
             if (snapshot.hasData) {
+                for (var i = 0; i < snapshot.data.length; i++) {
+                    _serviciosR.add(snapshot.data[i].nombre);
+                }
+                _drawerSelectedP();
+                
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, index) {
                   if (index < snapshot.data.length){
-                      _selectServicio.add(false);
+                      // _selectServicioR.add(false);
                     return Padding(
                       padding: const EdgeInsets.only(left: 15.0),
-                      child:_drawerSelected(snapshot, index)
+                      child: _drawerSelected(snapshot, index)
                     );
                   } return null;
                 },
@@ -129,14 +134,20 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
   }
 
   _getSelected(){
+      //  print(_serviciosR);
     List<String> L = List();
-    for (var i = 0; i < _selectServicio.length; i++) {
-      if(_selectServicio[i] == true) L.add(_serviciosR[i]);
+    // _selectServicioR = null;
+    int aux = _selectServicioR.length;
+    // _selectServicioR = null;
+    for (var i = 0; i < aux; i++) {
+      if(_selectServicioR[i] == true) L.add(_serviciosR[i]);
     }
+
     print(L);
   }
 
   _drawerSelected(AsyncSnapshot<List> snapshot, i){
+    //  _serviciosR.add(snapshot.data[i].nombre);
     return FilterChip(
       selected: _selectServicioR[i],
       label: Text(
@@ -151,7 +162,7 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
       selectedColor: Colors.blue,
       onSelected: (bool selected) {
         setState(() {
-          _selectServicio[i] = selected;
+          _selectServicioR[i] = selected;
         });
       },
     );
@@ -159,13 +170,19 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
 
   _drawerSelectedP(){
     List<String> L = List();
-    L.addAll(['Carpintería', 'Plomería']);
-    for (var i = 0; i < L.length; i++) {
+      L.add('Plomeria');
+      L.add('Jardinería');
+      L.add('Electricista');
+    int k = 0;
       for (var j = 0; j < _serviciosR.length; j++) {
-          if(L[i] == _serviciosR[j])
-            _selectServicioR[i] = true;
-          else _selectServicioR[i] = false;
+        if(k < L.length){
+        if(_serviciosR[j] == L[k]){
+          _selectServicioR[j] = true;
+          k++;
+        }else
+        _selectServicioR[j] = false;
+        }else  _selectServicioR[j] = false;
       }
-    }
   }
+  
 }
