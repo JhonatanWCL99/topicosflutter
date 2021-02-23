@@ -3,7 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 //import 'package:geolocator/geolocator.dart';
 import 'package:registro_login/pallete.dart';
 
-class CreateNewAccount3 extends StatelessWidget {
+class RegistroMapas extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -21,10 +21,10 @@ class CreateNewAccount3 extends StatelessWidget {
 
 class Ubicacion extends StatefulWidget {
   @override
-  Ubc createState() => Ubc();
+  StateUbicacion createState() => StateUbicacion();
 }
 
-class Ubc extends State<Ubicacion> {
+class StateUbicacion extends State<Ubicacion> {
   GoogleMapController controladorMapa;
   String buscarDireccion;
 

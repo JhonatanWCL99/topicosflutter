@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart" as firebase_core;
-import 'package:registro_login/screens/create-new-account-2.dart';
-import 'package:registro_login/screens/create-new-account-3.dart';
-import 'package:registro_login/screens/create-new-account-4.dart';
-import 'package:registro_login/screens/create-new-account.dart';
-import 'package:registro_login/screens/create-new_account-fin.dart';
+import 'package:registro_login/screens/RegistroDeDatos.dart';
+import 'package:registro_login/screens/RegistroAutentificacion.dart';
 import 'package:registro_login/screens/forgot-password.dart';
-import 'package:registro_login/screens/login-screen.dart';
+import 'package:registro_login/screens/Login.dart';
+
+import 'screens/RegistroMapas.dart';
+import 'screens/screens.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,10 +21,13 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       initialRoute: "/",
       routes: {
-        '/': (context) => CreateNewAccount2(),
+        '/': (context) => Login(),
         'ForgotPassword': (context) => ForgotPassword(),
-        'CreateNewAccount': (context) => CreateNewAccount(),
-        'CreateNewAccountFin': (context) => CreateNewAccountFin()
+        'RegistroDatos': (context) => RegistroDeDatos(),
+        'RegistroServicios': (context) => RegistroServicios(),
+        'RegistroHorarios': (context) => RegistroHorarios(),
+        'RegistroMapas': (context) => RegistroMapas(),
+        'RegistroAutentificacion': (context) => RegistroAutentificacion()
       },
     );
   }

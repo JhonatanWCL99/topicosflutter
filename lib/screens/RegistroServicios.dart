@@ -7,7 +7,9 @@ import 'package:registro_login/modelos/servicio.dart';
 import 'package:registro_login/pallete.dart';
 import 'package:registro_login/data/my_database.dart';
 
-class CreateNewAccount2 extends StatelessWidget {
+import '../widgets/rounded-button.dart';
+
+class RegistroServicios extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,16 +22,16 @@ class CreateNewAccount2 extends StatelessWidget {
           ),
           centerTitle: true,
         ),
-        body: Categorias());
+        body: RegistroServiciosFul());
   }
 }
 
-class Categorias extends StatefulWidget {
+class RegistroServiciosFul extends StatefulWidget {
   @override
-  StateCategoria createState() => StateCategoria();
+  StateRegistroServicios createState() => StateRegistroServicios();
 }
 
-class StateCategoria extends State<Categorias> with TickerProviderStateMixin {
+class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProviderStateMixin {
   MyDatabase _myDatabase = MyDatabase();
   List<String> opciones = ['Carpintero', 'Electricista', 'Plomero'];
   List<bool> seleccionado = [];
@@ -93,30 +95,17 @@ class StateCategoria extends State<Categorias> with TickerProviderStateMixin {
                     }else return Text("-------");
                   }),
             ),
-            GestureDetector(
-              onTap: () {
-                for (int i = 0; i < seleccionado.length; i++) {
-                  if (seleccionado[i]) {
-                    final Map<String, dynamic> map = {"nombre": opciones[i]};
-                    _myDatabase.insert(map, 'categorias');
-                  }
-                }
-
-                Navigator.pushNamed(context, 'CreateNewAccount3');
-              },
-              child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.only(top:40.0),
-                  child: Text(
-                    'Continuar',
-                    style: kBodyText,
-                  ),
-                ),
-                decoration: BoxDecoration(
-                    border:
-                        Border(bottom: BorderSide(width: 1, color: kWhite))),
-              ),
-            ),
+            RoundedButton(
+                        flatButton: FlatButton(
+                              onPressed: (){  
+                                Navigator.of(context).pushNamed("RegistroAutentificacion");
+                                },
+                              child: Text(
+                                'Continuar',
+                                style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                        ),
+                    ),
           ],
         ),
       ),

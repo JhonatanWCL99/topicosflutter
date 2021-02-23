@@ -6,29 +6,32 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:registro_login/pallete.dart';
 import 'package:registro_login/widgets/widgets.dart';
 
-class LoginScreen extends StatelessWidget {
+class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xff5DBFA6),
-          elevation: 0,
           title: Text(
-            'Registro',
+            'Login',
             style: kBodyText,
           ),
           centerTitle: true,
         ),
-        body: Login());
+        body: LoginFul()
+      );
   }
 }
 
-class Login extends StatefulWidget {
+class LoginFul extends StatefulWidget {
   @override
   StateLogin createState() => StateLogin();
 }
 
-class StateLogin extends State<Login> {
+class StateLogin extends State<LoginFul> {
+
+  final formkey = GlobalKey<FormState>();
+
   TextEditingController nombre;
   TextEditingController correo;
   TextEditingController contrasena;
@@ -39,10 +42,6 @@ class StateLogin extends State<Login> {
     return Stack(
       children: [
         Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xff5DBFA6),
-            elevation: 0,
-          ),
           body: ListView(
             children: [
               SizedBox(
@@ -57,11 +56,7 @@ class StateLogin extends State<Login> {
                       backgroundColor: Colors.grey[400].withOpacity(
                         0.4,
                       ),
-                      child: Icon(
-                        FontAwesomeIcons.userAlt,
-                        color: kBlack,
-                        size: size.width * 0.30,
-                      ),
+                      child: Image.asset("assets/logoAppServi.jpg")
                     ),
                   ),
                 ),
@@ -69,39 +64,40 @@ class StateLogin extends State<Login> {
               SizedBox(
                 height: 25,
               ),
-              Column(
+              Form(
+                key: formkey,
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TextFormField(
-                      controller: nombre,
-                      decoration: buildInputDecoration(Icons.person, "Nombre"),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: TextFormField(
+                      controller: correo,
+                      decoration: buildInputDecoration(Icons.email, "Correo"),
                       validator: (String value) {
-                        if (value.isEmpty) return "Escriba su Nombre PorFavor";
+                        if (value.isEmpty) {
+                          return 'Please a Enter';
+                        }
+                        if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                            .hasMatch(value)) {
+                          return 'Escriba su Correo PorFavor';
+                        }
                         return null;
-                      }),
-                  TextFormField(
-                    controller: correo,
-                    decoration: buildInputDecoration(Icons.email, "Correo"),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return 'Please a Enter';
-                      }
-                      if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                          .hasMatch(value)) {
-                        return 'Escriba su Correo PorFavor';
-                      }
-                      return null;
-                    },
+                      },
+                    ),
                   ),
-                  TextFormField(
-                      controller: contrasena,
-                      decoration: buildInputDecoration(
-                          FontAwesomeIcons.lock, "Contraseña"),
-                      validator: (String value) {
-                        if (value.isEmpty)
-                          return "Escriba su Contraseña PorFavor";
-                        return null;
-                      }),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 25.0),
+                    child: TextFormField(
+                        controller: contrasena,
+                        decoration: buildInputDecoration(
+                            FontAwesomeIcons.lock, "Contraseña"),
+                        validator: (String value) {
+                          if (value.isEmpty)
+                            return "Escriba su Contraseña PorFavor";
+                          return null;
+                        }),
+                  ),
                   GestureDetector(
                     onTap: () => Navigator.pushNamed(context, 'ForgotPassword'),
                     child: Text(
@@ -113,14 +109,25 @@ class StateLogin extends State<Login> {
                     height: 25,
                   ),
                   RoundedButton(
-                    buttonName: 'Iniciar Sesion',
+                    flatButton: FlatButton(
+                            onPressed: (){
+                               if(formkey.currentState.validate()){
+                                  formkey.currentState.save();
+                                  // Navigator.of(context).pushNamed("CreateNewAccountFin");
+                                }
+                            },
+                            child: Text(
+                              'Iniciar sesión',
+                              style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                        ),
                   ),
                   SizedBox(
                     height: 25,
                   ),
                   GestureDetector(
                     onTap: () =>
-                        Navigator.pushNamed(context, 'CreateNewAccount'),
+                        Navigator.pushNamed(context, 'RegistroDatos'),
                     child: Container(
                       child: Text(
                         'Crear Nueva Cuenta',
@@ -128,11 +135,12 @@ class StateLogin extends State<Login> {
                       ),
                       decoration: BoxDecoration(
                           border: Border(
-                              bottom: BorderSide(width: 1, color: kWhite))),
+                              bottom: BorderSide(width: 2, color: kWhite))),
                     ),
                   ),
                 ],
               ),
+             ),
               SizedBox(
                 height: 30,
               ),

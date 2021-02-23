@@ -3,13 +3,12 @@ import 'package:registro_login/pallete.dart';
 
 class RoundedButton extends StatelessWidget {
   final String opcion;
+    final FlatButton flatButton;
   const RoundedButton({
     Key key,
-    @required this.buttonName,
     this.opcion,
+    this.flatButton
   }) : super(key: key);
-
-  final String buttonName;
 
   @override
   Widget build(BuildContext context) {
@@ -21,19 +20,7 @@ class RoundedButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         color: kGreen,
       ),
-      child: FlatButton(
-        onPressed: () {
-          switch (opcion) {
-            case "fin":
-              Navigator.of(context).pushNamed("CreateNewAccountFin");
-              break;
-          }
-        },
-        child: Text(
-          buttonName,
-          style: kBodyText.copyWith(fontWeight: FontWeight.bold),
-        ),
-      ),
+      child: flatButton
     );
   }
 }

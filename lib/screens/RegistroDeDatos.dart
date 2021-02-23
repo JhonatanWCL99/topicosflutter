@@ -10,8 +10,9 @@ import 'package:path/path.dart' as Path;
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:registro_login/data/my_database.dart';
+import 'package:registro_login/Validaciones/Validar.dart';
 
-class CreateNewAccount extends StatelessWidget {
+class RegistroDeDatos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,26 +25,28 @@ class CreateNewAccount extends StatelessWidget {
           ),
           centerTitle: true,
         ),
-        body: CreateNewAccountFul());
+        body: RegistroDeDatosFul());
   }
 }
 
-class CreateNewAccountFul extends StatefulWidget {
+class RegistroDeDatosFul extends StatefulWidget {
   @override
-  StateCreateAccount createState() => StateCreateAccount();
+  StateRegistroDeDatos createState() => StateRegistroDeDatos();
 }
 
-class StateCreateAccount extends State<CreateNewAccountFul> {
+class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
   List listaSexo = ["M", "F"];
   String _selectSexo;
   File image;
   MyDatabase _myDatabase = MyDatabase();
   final picker = ImagePicker();
+  final formkey = GlobalKey<FormState>();
 
   TextEditingController nombre;
   TextEditingController ci;
   TextEditingController telefono;
   TextEditingController direccion;
+
 
   @override
   void initState() {
@@ -58,6 +61,7 @@ class StateCreateAccount extends State<CreateNewAccountFul> {
     telefono = new TextEditingController();
     direccion = new TextEditingController();
     ci = new TextEditingController();
+
   }
 
   @override
@@ -84,15 +88,15 @@ class StateCreateAccount extends State<CreateNewAccountFul> {
                     ),
                     Center(
                       child: Container(
-                          width: 100,
+                          width: 300,
                           height: 100,
                           child: image == null
                               ? Center(child: Text("Imagen no seleccionada"))
                               : Image.file(image)),
                     ),
                     Positioned(
-                      top: size.height * 0.08,
-                      left: size.width * 0.56,
+                      top: size.height * 0.1,
+                      left: size.width * 0.45,
                       child: Container(
                         height: size.width * 0.1,
                         width: size.width * 0.1,
@@ -113,79 +117,102 @@ class StateCreateAccount extends State<CreateNewAccountFul> {
                   // height: size.width * 0.1,
                   height: 10,
                 ),
-                Column(
+                Form(
+                 key: formkey,
+                 child: Column(
                   children: [
-                    TextFormField(
-                        controller: ci,
-                        decoration: buildInputDecoration(
-                            Icons.business_center_rounded,
-                            "Carnet de Identidad"),
-                        validator: (String value) {
-                          if (value.isEmpty) return "Escriba su CI PorFavor";
-                          return null;
-                        }),
-                    TextFormField(
-                        controller: nombre,
-                        decoration: buildInputDecoration(
-                            Icons.person, "Nombre y apellido"),
-                        validator: (String value) {
-                          if (value.isEmpty)
-                            return "Escriba su Nombre PorFavor";
-                          return null;
-                        }),
-                    TextFormField(
-                        controller: direccion,
-                        decoration:
-                            buildInputDecoration(Icons.home, "Direccion"),
-                        validator: (String value) {
-                          if (value.isEmpty)
-                            return "Escriba su Direccion PorFavor";
-                          return null;
-                        }),
-                    TextFormField(
-                        controller: telefono,
-                        decoration:
-                            buildInputDecoration(Icons.phone_sharp, "Telefono"),
-                        validator: (String value) {
-                          if (value.isEmpty)
-                            return "Escriba su Telefono PorFavor";
-                          return null;
-                        }),
-                    Row(children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Text("Seleccione su sexo: ",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: _selectComboBoxSexo(),
-                      ),
-                    ]),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: TextFormField(
+                          controller: ci,
+                          decoration: buildInputDecoration(
+                              Icons.business_center_rounded,
+                              "Carnet de Identidad"),
+                            keyboardType: TextInputType.phone,
+                            validator: (String value) {
+                              if (value.isEmpty) return "Escriba su CI PorFavor";
+                              if(!Validar.soloNumeros(ci.text))
+                              return "Solo se permite números";
+                              return null;
+                            },
+                          ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: TextFormField(
+                          controller: nombre,
+                          decoration: buildInputDecoration(
+                              Icons.person, "Nombre y apellido"),
+                          validator: (String value) {
+                            if (value.isEmpty)
+                              return "Escriba su Nombre PorFavor";
+                            return null;
+                          }),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: TextFormField(
+                          controller: direccion,
+                          decoration:
+                              buildInputDecoration(Icons.home, "Direccion"),
+                          validator: (String value) {
+                            if (value.isEmpty)
+                              return "Escriba su Direccion PorFavor";
+                            return null;
+                          }),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: TextFormField(
+                          controller: telefono,
+                          decoration:
+                              buildInputDecoration(Icons.phone_sharp, "Telefono"),
+                          validator: (String value) {
+                            if (value.isEmpty)
+                              return "Escriba su Telefono PorFavor";
+                            if(!Validar.soloNumeros(ci.text))
+                              return "Solo se permite números";
+                            return null;
+                          }),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 25.0),
+                      child: Row(children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 55),
+                          child: Text("Seleccione su sexo: ",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: _selectComboBoxSexo(),
+                        ),
+                      ]),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      height: size.height * 0.08,
-                      width: size.width * 0.8,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: kGreen,
-                      ),
-                      child: FlatButton(
-                        onPressed: () {
-                          upLoadImage();
-                        },
-                        child: Text(
-                          'Continuar',
-                          style:
-                              kBodyText.copyWith(fontWeight: FontWeight.bold),
+                      RoundedButton(
+                        flatButton: FlatButton(
+                              onPressed: (){
+                                if(formkey.currentState.validate()){
+                                    formkey.currentState.save();
+                                    Navigator.of(context).pushNamed("RegistroServicios");
+                                  }
+                              },
+                              child: Text(
+                                'Continuar',
+                                style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+                              ),
                         ),
-                      ),
                     ),
+                    Container(
+                      height: 100,
+                    )
                   ],
-                )
+                ),
+               )
               ],
             ),
           ),

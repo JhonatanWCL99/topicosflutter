@@ -6,12 +6,16 @@ class TextInputField extends StatelessWidget {
     Key key,
     @required this.icon,
     @required this.hint,
+    this.mensaje,
+    this.mensajeCorreo,
     @required this.controlador,
     @required this.validator,
     this.inputType,
     this.inputAction,
   }) : super(key: key);
 
+  final String mensaje;
+  final String mensajeCorreo;
   final IconData icon;
   final TextEditingController controlador;
   final String hint;
@@ -25,14 +29,14 @@ class TextInputField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Container(
-        height: size.height * 0.08,
+        height: size.height * 0.8,
         width: size.width * 0.8,
         decoration: BoxDecoration(
           color: Colors.grey[500].withOpacity(0.5),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
-          child: TextField(
+          child: TextFormField(
             controller: controlador,
             decoration: InputDecoration(
               border: InputBorder.none,
@@ -47,6 +51,12 @@ class TextInputField extends StatelessWidget {
               hintText: hint,
               hintStyle: kBodyText,
             ),
+            validator: (value){
+              if(value.isEmpty)
+                return mensaje;
+              if(!value.endsWith('@gmail.com'))
+                return mensajeCorreo;
+            },
             style: kBodyText,
             keyboardType: inputType,
             textInputAction: inputAction,

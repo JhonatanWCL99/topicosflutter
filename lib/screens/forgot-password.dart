@@ -58,7 +58,7 @@ class ForgotPassword extends StatelessWidget {
                     SizedBox(
                       height: 20,
                     ),
-                    RoundedButton(buttonName: 'Enviar')
+                    // RoundedButton(buttonName: 'Enviar')
                   ],
                 ),
               )
