@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       initialRoute: "/",
       routes: {
-        '/': (context) => RegistroServicios(),
+        '/': (context) => RegistroDeDatos(),
         'ForgotPassword': (context) => ForgotPassword(),
         'RegistroDatos': (context) => RegistroDeDatos(),
         'RegistroServicios': (context) => RegistroServicios(),

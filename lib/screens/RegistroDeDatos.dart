@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:registro_login/modelos/trabajador.dart';
 import 'package:registro_login/pallete.dart';
 import 'package:registro_login/widgets/widgets.dart';
 
@@ -42,6 +43,7 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
   final picker = ImagePicker();
   final formkey = GlobalKey<FormState>();
 
+  List<Empleado>datosE = [];
   TextEditingController nombre;
   TextEditingController ci;
   TextEditingController telefono;
@@ -56,16 +58,39 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
 
     super.initState();
     _selectSexo = listaSexo[0];
-
+  _loadData();
     nombre = new TextEditingController();
     telefono = new TextEditingController();
     direccion = new TextEditingController();
     ci = new TextEditingController();
 
+    // _loadData();
+
+  }
+
+  _loadData() async {
+    List<Empleado> auxDatosE = await _myDatabase.notes();
+    print(auxDatosE);
+    setState(() {
+      datosE = auxDatosE;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    print("length: ${datosE.length}");
+    if(datosE.isEmpty) return _formRegistro(ci, nombre, direccion, telefono);
+    int ultimo = datosE.length-1;
+    ci.text = datosE[ultimo].ci;
+    nombre.text = datosE[ultimo].nombreYApellido;
+    direccion.text = datosE[ultimo].direccion;
+    telefono.text = datosE[ultimo].telefono;
+    return _formRegistro(ci, nombre, direccion, telefono);
+  }
+
+  _formRegistro(TextEditingController ci, TextEditingController nombreYApellido,
+                TextEditingController direccion, TextEditingController telefono){
+
     Size size = MediaQuery.of(context).size;
     return Stack(
       children: [
@@ -140,7 +165,7 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 5.0),
                       child: TextFormField(
-                          controller: nombre,
+                          controller: nombreYApellido,
                           decoration: buildInputDecoration(
                               Icons.person, "Nombre y apellido"),
                           validator: (String value) {
@@ -170,7 +195,7 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
                           validator: (String value) {
                             if (value.isEmpty)
                               return "Escriba su Telefono PorFavor";
-                            if(!Validar.soloNumeros(ci.text))
+                            if(!Validar.soloNumeros(telefono.text))
                               return "Solo se permite números";
                             return null;
                           }),
@@ -198,7 +223,22 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
                               onPressed: (){
                                 if(formkey.currentState.validate()){
                                     formkey.currentState.save();
-                                    Navigator.of(context).pushNamed("RegistroServicios");
+                                    final Map<String, dynamic> map = {
+                                      "ci": ci.text,
+                                      "nombreYApellido": nombreYApellido.text,
+                                      "direccion": direccion.text,
+                                      "estado": "a", //activo
+                                      "imagePerfil": "ok",
+                                      "telefono": telefono.text,
+                                      "sexo": _selectSexo,
+                                      "tipo": "t" //trabajador
+                                    };
+                                    _myDatabase.insert(map, 'datos_basicos');
+                                    // print(datosE.length );
+                                    // if(datosE.length >=2 )
+                                    //   MyDatabase.delete(datosE[datosE.length-2]);
+                                    // MyDatabase.notes();
+                                    // Navigator.of(context).pushNamed("RegistroServicios");
                                   }
                               },
                               child: Text(
@@ -218,7 +258,8 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
           ),
         )
       ],
-    );
+    ); 
+
   }
 
   _selectComboBoxSexo() {
@@ -272,7 +313,7 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
           "tipo": "t" //trabajador
         };
 
-        _myDatabase.insert(map, 'datos_basicos');
+        // _myDatabase.insert(map, 'datos_basicos');
       });
     });
     /*final uri = Uri.parse("http://192.168.56.1/registro_login/registro.php");

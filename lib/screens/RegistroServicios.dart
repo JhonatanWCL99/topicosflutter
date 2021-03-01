@@ -6,6 +6,7 @@ import 'package:registro_login/api.dart';
 import 'package:registro_login/modelos/servicio.dart';
 import 'package:registro_login/pallete.dart';
 import 'package:registro_login/data/my_database.dart';
+import 'package:registro_login/screens/screens.dart';
 
 import '../widgets/rounded-button.dart';
 
@@ -31,92 +32,128 @@ class RegistroServiciosFul extends StatefulWidget {
   StateRegistroServicios createState() => StateRegistroServicios();
 }
 
-class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProviderStateMixin {
-  MyDatabase _myDatabase = MyDatabase();
+class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerProviderStateMixin*/ {
+  // MyDatabase _myDatabase = MyDatabase();
 
-  
-  Future<List<Servicio>> _servicios;
-  List<String> _serviciosR = [];
-  
+  List<Servicio>datosS = [];
+
+  List _servicios = List();
   List<bool> _selectServicio = [];
-  List<bool> _selectServicioR = [false,false,false,false,false];
+  
+  Future<void> getDatosServicios() async {
+    Api api = Api();
+    List auxServicio = await api.getServicios();
+    setState(() {
+      _servicios = auxServicio;
+    });
+  }
 
   @override
   void initState() {
-    _myDatabase
-        .initialize()
-        .then((value) => '..................database intialize');
+    // _myDatabase
+    //     .initialize()
+    //     .then((value) => '..................database intialize');
     super.initState();
+    _loadData();
+    getDatosServicios();
+    if(datosS.isEmpty)
+      _getServiciosBoolNoGuardado(); //inicializa _selectServicio no guardado
+    else
+      _getServiciosBoolGuardado(); //inicializa _selectServicio guardado
+  }
 
-    Api _api = new Api();
-    _servicios = _api.getServicios();
+  _loadData() async {
+    // List<Servicio> auxDatosE = await MyDatabase.generateCategoryList();
+    // print(auxDatosE[0]);
+    setState(() {
+      // datosS = auxDatosE;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: ListView(
-        children: <Widget>[
+        children: [
           Padding(
-            padding: EdgeInsets.only(top: 40),
-            child: _drawerServicio(),
+            padding: const EdgeInsets.only(top: 40.0),
+            child: _getDrawServicio(),
           ),
+
           Padding(
-            padding: const EdgeInsets.only(top: 380.0),
+            padding: const EdgeInsets.only(top: 350.0),
             child: RoundedButton(
-              flatButton: FlatButton(
-                    onPressed: (){ 
-                      _getSelected(); 
-                      // Navigator.of(context).pushNamed("RegistroHorarios");
-                      },
-                    child: Text(
-                      'Continuar',
-                      style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+                      flatButton: FlatButton(
+                              onPressed: () async {
+                                await _getServiciosSeleccionados();
+                                
+                                // Navigator.of(context).pushNamed("RegistroHorarios",
+                                //                                 arguments: ServiciosSeleccionados(
+                                //                                   servicios: [L[0],L[1], L[2]]
+                                //                                   ));
+                                
+                              },
+                              child: Text(
+                                'Continuar',
+                                style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                          ),
                     ),
-              ),
-            ),
           ),
-        ],
-      ),
+          ]
+        )
     );
   }
 
-  _drawerServicio(){
-    return Container(
-      height: 40,
-      child: FutureBuilder<List>(
-          future: _servicios,
-          builder:
-              (BuildContext context, AsyncSnapshot<List> snapshot) { 
-            if (snapshot.hasData) {
-                for (var i = 0; i < snapshot.data.length; i++) {
-                    _serviciosR.add(snapshot.data[i].nombre);
-                }
-                _drawerSelectedP();
-                
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, index) {
-                  if (index < snapshot.data.length){
-                      // _selectServicioR.add(false);
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 15.0),
-                      child: _drawerSelected(snapshot, index)
-                    );
-                  } return null;
-                },
-              );
-            }else return Text("----");
-          }),
+  _getDrawServicio(){           
+      return Container(
+        height: 40,      
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: _servicios == null ? 0: _servicios.length,
+          itemBuilder: (BuildContext context, index) {
+                // _selectServicio.add(false);
+            return Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: _drawServicios(_servicios, index)
+            );
+          },
+        )
     );
   }
 
-  _getServicios(AsyncSnapshot<List> snapshot, i){
-    _serviciosR.add(snapshot.data[i].nombre);
+
+  // _getDrawServicio(){           
+  //     return Container(
+  //     height: 40,
+  //     child: FutureBuilder<List>(
+  //         future: _servicios,
+  //         builder:
+  //             (BuildContext context, AsyncSnapshot<List> snapshot) { 
+  //           if (snapshot.hasData) {        
+  //             return ListView.builder(
+  //               scrollDirection: Axis.horizontal,
+  //               itemBuilder: (BuildContext context, index) {
+  //                 if (index < snapshot.data.length){
+  //                     // _selectServicio.add(false);
+  //                   return Padding(
+  //                     padding: const EdgeInsets.only(left: 15.0),
+  //                     child: _drawServicios(snapshot, index)
+  //                   );
+  //                 } return null;
+  //               },
+  //             );
+  //           }else return Text("");
+  //         }),
+  //   );
+  // }
+
+  _drawServicios(List snapshot, i){
     return FilterChip(
       selected: _selectServicio[i],
       label: Text(
-        snapshot.data[i].nombre,
+        snapshot[i]['nombre'],
         style: TextStyle(color: Colors.white),
       ),
       // avatar: FlutterLogo(),
@@ -133,56 +170,76 @@ class StateRegistroServicios extends State<RegistroServiciosFul> with TickerProv
     );
   }
 
-  _getSelected(){
-      //  print(_serviciosR);
+  _getServiciosGuardado()async {
     List<String> L = List();
-    // _selectServicioR = null;
-    int aux = _selectServicioR.length;
-    // _selectServicioR = null;
-    for (var i = 0; i < aux; i++) {
-      if(_selectServicioR[i] == true) L.add(_serviciosR[i]);
+    List<String> listaServi = await _getListaServicios();
+    for (var i = 0; i < listaServi.length; i++) {
+      if(_selectServicio[i] == true) L.add(listaServi[i]);
+    }
+    return L;
+  }
+
+
+  _getServiciosBoolGuardado()async{
+    List<String> L = List();
+      // L.add('Plomeria');
+      // L.add('Jardinería');
+      // L.add('Electricista');
+    for (var i = 0; i < datosS.length; i++) {
+      L.add(datosS[i].nombre);  
     }
 
-    print(L);
-  }
-
-  _drawerSelected(AsyncSnapshot<List> snapshot, i){
-    //  _serviciosR.add(snapshot.data[i].nombre);
-    return FilterChip(
-      selected: _selectServicioR[i],
-      label: Text(
-        snapshot.data[i].nombre,
-        style: TextStyle(color: Colors.white),
-      ),
-      // avatar: FlutterLogo(),
-      elevation: 10,
-      pressElevation: 5,
-      shadowColor: Colors.teal,
-      backgroundColor: Colors.black54,
-      selectedColor: Colors.blue,
-      onSelected: (bool selected) {
-        setState(() {
-          _selectServicioR[i] = selected;
-        });
-      },
-    );
-  }
-
-  _drawerSelectedP(){
-    List<String> L = List();
-      L.add('Plomeria');
-      L.add('Jardinería');
-      L.add('Electricista');
+    List<bool> listaBool = List();
+    List<dynamic> listaServi = await _getListaServicios();
     int k = 0;
-      for (var j = 0; j < _serviciosR.length; j++) {
-        if(k < L.length){
-        if(_serviciosR[j] == L[k]){
-          _selectServicioR[j] = true;
+    for (var j = 0; j < listaServi.length; j++) {
+      if(k < L.length){
+        if(listaServi[j] == L[k]){
+          listaBool.add(true);
           k++;
         }else
-        _selectServicioR[j] = false;
-        }else  _selectServicioR[j] = false;
-      }
+          listaBool.add(false);
+      }else  listaBool.add(false);
+    }
+    setState(() {
+      _selectServicio = listaBool;
+    });
+  }
+
+  _getServiciosSeleccionados() async {
+    List<String> L = List<String>();
+    List<dynamic> listaServi = await _getListaServicios();
+    for (var i = 0; i < listaServi.length; i++) {
+      if(_selectServicio[i] == true)
+        L.add(listaServi[i]);
+    }
+    
+    for (var i = 0; i < L.length; i++) {
+      // MyDatabase.insertCategory(Servicio(nombre: L[i]));
+    }
+  }
+
+  _getServiciosBoolNoGuardado()async{
+
+    List<bool> listaBool = List();
+    List<dynamic> listaServi = await _getListaServicios();
+
+    for (var j = 0; j < listaServi.length; j++) {
+      listaBool.add(false);
+    }
+    setState(() {
+      _selectServicio = listaBool;
+    });
+  }
+
+  _getListaServicios() async{
+    List<String> listaServicios = List();
+    Api api = Api();
+    List L = await api.getServicios();
+    for(var i = 0; i < L.length; i++){
+      listaServicios.add(L[i]['nombre']);
+    }
+    return listaServicios;
   }
   
 }
