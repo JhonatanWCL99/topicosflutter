@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart" as firebase_core;
+import 'package:registro_login/notificacion.dart';
 import 'package:registro_login/screens/RegistroDeDatos.dart';
 import 'package:registro_login/screens/RegistroAutentificacion.dart';
 import 'package:registro_login/screens/forgot-password.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       initialRoute: "/",
       routes: {
-        '/': (context) => RegistroDeDatos(),
+        '/': (context) => Notificacion(),
         'ForgotPassword': (context) => ForgotPassword(),
         'RegistroDatos': (context) => RegistroDeDatos(),
         'RegistroServicios': (context) => RegistroServicios(),

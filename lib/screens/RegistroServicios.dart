@@ -36,7 +36,7 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
   // MyDatabase _myDatabase = MyDatabase();
 
   List<Servicio>datosS = [];
-
+  MyDatabase _myDatabase = MyDatabase();
   List _servicios = List();
   List<bool> _selectServicio = [];
   
@@ -50,24 +50,26 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
 
   @override
   void initState() {
-    // _myDatabase
-    //     .initialize()
-    //     .then((value) => '..................database intialize');
+    _myDatabase
+        .initialize()
+        .then((value) => '..................database intialize');
+
     super.initState();
-    _loadData();
+    // _loadData();
     getDatosServicios();
-    if(datosS.isEmpty)
-      _getServiciosBoolNoGuardado(); //inicializa _selectServicio no guardado
-    else
+    // if(datosS.isEmpty)
+    //   _getServiciosBoolNoGuardado(); //inicializa _selectServicio no guardado
+    // else
       _getServiciosBoolGuardado(); //inicializa _selectServicio guardado
   }
 
   _loadData() async {
-    // List<Servicio> auxDatosE = await MyDatabase.generateCategoryList();
-    // print(auxDatosE[0]);
+    List<Servicio> auxDatosE = await _myDatabase.notesCategory();
+    print("traer servi: $auxDatosE");
     setState(() {
-      // datosS = auxDatosE;
+      datosS = auxDatosE;
     });
+    print("traer datosS: $datosS");
   }
 
   @override
@@ -86,8 +88,9 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
             child: RoundedButton(
                       flatButton: FlatButton(
                               onPressed: () async {
-                                await _getServiciosSeleccionados();
-                                
+                                // List L = await _myDatabase.notesCategory();
+                                // print(L[1].nombre);
+                                _getServiciosSeleccionados();
                                 // Navigator.of(context).pushNamed("RegistroHorarios",
                                 //                                 arguments: ServiciosSeleccionados(
                                 //                                   servicios: [L[0],L[1], L[2]]
@@ -185,10 +188,11 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
       // L.add('Plomeria');
       // L.add('Jardinería');
       // L.add('Electricista');
-    for (var i = 0; i < datosS.length; i++) {
-      L.add(datosS[i].nombre);  
+    List<Servicio> auxDatosE = await _myDatabase.notesCategory();
+    for (var i = 0; i < auxDatosE.length; i++) {
+      L.add(auxDatosE[i].nombre);  
     }
-
+    print("Servi: $L");
     List<bool> listaBool = List();
     List<dynamic> listaServi = await _getListaServicios();
     int k = 0;
@@ -215,7 +219,7 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
     }
     
     for (var i = 0; i < L.length; i++) {
-      // MyDatabase.insertCategory(Servicio(nombre: L[i]));
+      _myDatabase.insert({"nombre": L[i]}, "categorias");
     }
   }
 

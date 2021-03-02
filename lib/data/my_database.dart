@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:registro_login/modelos/servicio.dart';
 import 'package:registro_login/modelos/trabajador.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -28,12 +29,13 @@ class MyDatabase {
     var path = dir + "regitro.db";
     var database =
         await openDatabase(path, version: 1, onCreate: (db, version) {
-      db.execute(
-              'CREATE TABLE datos_basicos (id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
-              'ci TEXT not null, nombreYApellido TEXT not null,direccion TEXT not null, ' +
-              'estado TEXT not null, imagePerfil TEXT not null, telefono TEXT not null, ' +
-              'sexo TEXT not null, tipo TEXT not null)'
-              );
+              // db.execute(
+              // 'CREATE TABLE datos_basicos (id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+              // 'ci TEXT not null, nombreYApellido TEXT not null,direccion TEXT not null, ' +
+              // 'estado TEXT not null, imagePerfil TEXT not null, telefono TEXT not null, ' +
+              // 'sexo TEXT not null, tipo TEXT not null)'
+              // );
+              db.execute( 'CREATE TABLE categorias (id INTEGER PRIMARY KEY AUTOINCREMENT, ' + 'nombre TEXT not null)');
 
     });
     return database;
@@ -65,7 +67,20 @@ class MyDatabase {
           telefono: notesMap[i]['telefono']
       )
     );
-}
+  }
+
+  Future<List<Servicio>> notesCategory() async {
+    var db = await this.database;
+    final List<Map<String, dynamic>> notesMap = await db.query("categorias"); // Listado de maps
+
+    return List.generate(
+      notesMap.length,
+      (i) => Servicio(
+          id: notesMap[i]['id'],
+          nombre: notesMap[i]['nombre'],
+      )
+    );
+  }
 
 
   /* Future<List<Person>> getPeople() async {
