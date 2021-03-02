@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-//import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:registro_login/pallete.dart';
+import 'package:geocoding/geocoding.dart';
 
 class RegistroMapas extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -55,7 +56,7 @@ class StateUbicacion extends State<Ubicacion> {
                     suffixIcon: IconButton(
                         icon: IconButton(
                       icon: Icon(Icons.search),
-                      //onPressed: barraBusqueda,
+                      //      onPressed: barraBusqueda,
                       iconSize: 30.0,
                     )),
                   ),
@@ -72,15 +73,16 @@ class StateUbicacion extends State<Ubicacion> {
   }
 
   //Funcion que creamos para busqueda por direccion
-  //barraBusqueda() {
-  //Geolocator().placemarkFromAddress(buscarDireccion).then((result) {
-  //  controladorMapa.animateCamera(CameraUpdate.newCameraPosition(
-  //    CameraPosition(
-  //      target: LatLng(
-//                  result[0].position.latitude, result[0].position.longitude),
-  //            zoom: 10.0)));
-  // });
-  // }
+  /* barraBusqueda() {
+    Future<List<Location>> locations = locationFromAddress(buscarDireccion);
+    controladorMapa.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(
+            locations[0].position.latitude, locations[0].position.longitude),
+        zoom: 10.0)));
+
+      locations.
+  }
+*/
 
   void onMapCreated(controller) {
     setState(() {

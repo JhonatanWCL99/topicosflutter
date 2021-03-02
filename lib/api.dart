@@ -27,52 +27,60 @@ class Api {
   //   }
   //   return servicios;
   // }
-  
-    Future<List<dynamic>> getServicios() async {
-      http.Response response = await http.get(url + 'servicios');
 
-      if(response.statusCode == 200){
-        print('petición correcta');
+  Future<List<dynamic>> getServicios() async {
+    http.Response response = await http.get(url + 'servicios');
 
-        final jsonData = jsonDecode(response.body);
-        List<dynamic> mapDatos = jsonData;
-        return mapDatos;
-      }else{
-        return null;
-      }
+    if (response.statusCode == 200) {
+      print('petición correcta');
+
+      final jsonData = jsonDecode(response.body);
+      List<dynamic> mapDatos = jsonData;
+      return mapDatos;
+    } else {
+      return null;
     }
-  
-    // Future<List<Horario>> getHorarios() async {
+  }
+
+  // Future<List<Horario>> getHorarios() async {
+  // final prefs = await SharedPreferences.getInstance();
+  // final value = prefs.get('token') ?? 0;
+  // print('RToken read: $value');
+  // var response = await http.get(url + 'horarios');
+  // print('Response status: ${response.statusCode}');
+  // print('Response body: ${response.body}');
+  // var jsonResponse = jsonDecode(response.body);
+  // List<Horario> horarios = [];
+
+  // for (Map i in jsonResponse) {
+  //   horarios.add(Horario.fromMap(i));
+  // }
+  // return horarios;
+  // }
+
+  Future<List<dynamic>> getHorarios() async {
     // final prefs = await SharedPreferences.getInstance();
     // final value = prefs.get('token') ?? 0;
     // print('RToken read: $value');
-    // var response = await http.get(url + 'horarios');
+    http.Response response = await http.get(url + 'horarios');
     // print('Response status: ${response.statusCode}');
     // print('Response body: ${response.body}');
-    // var jsonResponse = jsonDecode(response.body);
-    // List<Horario> horarios = [];
-
-    // for (Map i in jsonResponse) {
-    //   horarios.add(Horario.fromMap(i));
-    // }
-    // return horarios;
-    // }
-
-    Future<List<dynamic>> getHorarios() async {
-      // final prefs = await SharedPreferences.getInstance();
-      // final value = prefs.get('token') ?? 0;
-      // print('RToken read: $value');
-      http.Response response = await http.get(url + 'horarios');
-      // print('Response status: ${response.statusCode}');
-      // print('Response body: ${response.body}');
-      if(response.statusCode == 200){
-        print('petición correcta');
-        var jsonResponse = jsonDecode(response.body);
-        List<dynamic> horarios = jsonResponse;
-        return horarios;
-      }else
+    if (response.statusCode == 200) {
+      print('petición correcta');
+      var jsonResponse = jsonDecode(response.body);
+      List<dynamic> horarios = jsonResponse;
+      return horarios;
+    } else
       return null;
-      
-    }
+  }
 
+  postData(data, apiUrl) async {
+    return await http.post(url + apiUrl,
+        body: jsonEncode(data), headers: _setHeaders());
+  }
+
+  _setHeaders() => {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      };
 }

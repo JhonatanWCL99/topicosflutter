@@ -4,6 +4,7 @@ import 'package:registro_login/screens/RegistroDeDatos.dart';
 import 'package:registro_login/screens/RegistroAutentificacion.dart';
 import 'package:registro_login/screens/forgot-password.dart';
 import 'package:registro_login/screens/Login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screens/RegistroMapas.dart';
 import 'screens/screens.dart';
@@ -15,20 +16,31 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  getToken() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('token');
+    return token;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      initialRoute: "/",
-      routes: {
-        '/': (context) => RegistroDeDatos(),
-        'ForgotPassword': (context) => ForgotPassword(),
-        'RegistroDatos': (context) => RegistroDeDatos(),
-        'RegistroServicios': (context) => RegistroServicios(),
-        'RegistroHorarios': (context) => RegistroHorarios(),
-        'RegistroMapas': (context) => RegistroMapas(),
-        'RegistroAutentificacion': (context) => RegistroAutentificacion()
-      },
-    );
+    var token = getToken();
+    if (token == null) {
+      return MaterialApp(
+        title: 'Material App',
+        initialRoute: "/",
+        routes: {
+          '/': (context) => Login(),
+          'ForgotPassword': (context) => ForgotPassword(),
+          'RegistroDatos': (context) => RegistroDeDatos(),
+          'RegistroServicios': (context) => RegistroServicios(),
+          'RegistroHorarios': (context) => RegistroHorarios(),
+          'RegistroMapas': (context) => RegistroMapas(),
+          'RegistroAutentificacion': (context) => RegistroAutentificacion()
+        },
+      );
+    } else {
+      return Home();
+    }
   }
 }
