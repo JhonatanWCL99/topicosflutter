@@ -24,23 +24,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var token = getToken();
-    if (token == null) {
-      return MaterialApp(
-        title: 'Material App',
-        initialRoute: "/",
-        routes: {
-          '/': (context) => Login(),
-          'ForgotPassword': (context) => ForgotPassword(),
-          'RegistroDatos': (context) => RegistroDeDatos(),
-          'RegistroServicios': (context) => RegistroServicios(),
-          'RegistroHorarios': (context) => RegistroHorarios(),
-          'RegistroMapas': (context) => RegistroMapas(),
-          'RegistroAutentificacion': (context) => RegistroAutentificacion()
-        },
-      );
-    } else {
-      return Home();
-    }
+   // var token = getToken();
+    // if (token == null) {
+    return MaterialApp(
+      title: 'Material App',
+      initialRoute: "/",
+      routes: {
+        '/': (context) => Login(),
+        'ForgotPassword': (context) => ForgotPassword(),
+        'RegistroDatos': (context) => RegistroDeDatos(),
+        'RegistroServicios': (context) => RegistroServicios(),
+        'RegistroHorarios': (context) => RegistroHorarios(),
+        'RegistroMapas': (context) => RegistroMapas(),
+        'RegistroAutentificacion': (context) => RegistroAutentificacion()
+      },
+    );
+    //} else {
+    // return Home();
+    //}
   }
 }

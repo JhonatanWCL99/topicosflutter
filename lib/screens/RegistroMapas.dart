@@ -1,8 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:registro_login/pallete.dart';
-import 'package:geocoding/geocoding.dart';
 
 class RegistroMapas extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -26,67 +26,45 @@ class Ubicacion extends StatefulWidget {
 }
 
 class StateUbicacion extends State<Ubicacion> {
-  GoogleMapController controladorMapa;
-  String buscarDireccion;
+  GoogleMapController _controller;
+
+  final CameraPosition _initialPosition =
+      CameraPosition(target: LatLng(24.903623, 67.198367));
+
+  final List<Marker> markers = [];
+
+  addMarker(cordinate) {
+    int id = Random().nextInt(100);
+
+    setState(() {
+      markers
+          .add(Marker(position: cordinate, markerId: MarkerId(id.toString())));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          GoogleMap(
-              onMapCreated: onMapCreated,
-              initialCameraPosition: CameraPosition(
-                  target: LatLng(21.1193733, -86.809402), zoom: 15.0)),
-          Positioned(
-            top: 30.0,
-            right: 15.0,
-            left: 15.0,
-            child: Container(
-              height: 50.0,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.white),
-              child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese Direccion a Buscar',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                    suffixIcon: IconButton(
-                        icon: IconButton(
-                      icon: Icon(Icons.search),
-                      //      onPressed: barraBusqueda,
-                      iconSize: 30.0,
-                    )),
-                  ),
-                  onChanged: (val) {
-                    setState(() {
-                      buscarDireccion = val;
-                    });
-                  }),
-            ),
-          )
-        ],
+      body: GoogleMap(
+        initialCameraPosition: _initialPosition,
+        mapType: MapType.normal,
+        onMapCreated: (controller) {
+          setState(() {
+            _controller = controller;
+          });
+        },
+        markers: markers.toSet(),
+        onTap: (cordinate) {
+          _controller.animateCamera(CameraUpdate.newLatLng(cordinate));
+          addMarker(cordinate);
+        },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _controller.animateCamera(CameraUpdate.zoomOut());
+        },
+        child: Icon(Icons.zoom_out),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-  }
-
-  //Funcion que creamos para busqueda por direccion
-  /* barraBusqueda() {
-    Future<List<Location>> locations = locationFromAddress(buscarDireccion);
-    controladorMapa.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: LatLng(
-            locations[0].position.latitude, locations[0].position.longitude),
-        zoom: 10.0)));
-
-      locations.
-  }
-*/
-
-  void onMapCreated(controller) {
-    setState(() {
-      controladorMapa = controller;
-    });
   }
 }

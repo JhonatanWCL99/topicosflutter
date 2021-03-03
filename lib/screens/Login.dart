@@ -35,9 +35,9 @@ class StateLogin extends State<LoginFul> {
   bool _isLoading = false;
   final formkey = GlobalKey<FormState>();
 
-  TextEditingController nombre;
-  TextEditingController correo;
-  TextEditingController contrasena;
+  TextEditingController nombre = new TextEditingController();
+  TextEditingController correo = new TextEditingController();
+  TextEditingController contrasena = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -165,9 +165,10 @@ class StateLogin extends State<LoginFul> {
     Api api = Api();
     var res = await api.postData(data, 'login');
     var body = json.decode(res.body);
-    if (body['success']) {
+    if (body['token']!=null ) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
+      print(body['token']);
       // localStorage.setString('user', json.encode(body['user']));
       Navigator.push(
           context, new MaterialPageRoute(builder: (context) => Home()));
