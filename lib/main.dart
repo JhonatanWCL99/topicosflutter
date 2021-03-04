@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart" as firebase_core;
 import 'package:registro_login/notificacion.dart';
+import 'package:registro_login/notification_provider.dart';
 import 'package:registro_login/screens/RegistroDeDatos.dart';
 import 'package:registro_login/screens/RegistroAutentificacion.dart';
 import 'package:registro_login/screens/forgot-password.dart';
@@ -16,7 +17,27 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  MyApp({Key key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    final notificationProvider = NotificationProvider();
+    notificationProvider.initNotifications();
+
+
+    super.initState();
+
+  }
+
   getToken() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
@@ -25,8 +46,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   // var token = getToken();
-    // if (token == null) {
     return MaterialApp(
       title: 'Material App',
       initialRoute: "/",
@@ -40,8 +59,5 @@ class MyApp extends StatelessWidget {
         'RegistroAutentificacion': (context) => RegistroAutentificacion()
       },
     );
-    //} else {
-    // return Home();
-    //}
   }
 }

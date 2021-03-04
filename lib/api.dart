@@ -12,28 +12,10 @@ import 'screens/screens.dart';
 class Api {
   var url = 'https://topicos-web.herokuapp.com/api/';
 
-  // Future<List<Servicio>> getServicios() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final value = prefs.get('token') ?? 0;
-  //   // print('RToken read: $value');
-  //   var response = await http.get(url + 'servicios');
-  //   // print('Response status: ${response.statusCode}');
-  //   // print('Response body: ${response.body}');
-  //   var jsonResponse = jsonDecode(response.body);
-  //   List<Servicio> servicios = [];
-
-  //   for (Map i in jsonResponse) {
-  //     servicios.add(Servicio.fromMap(i));
-  //   }
-  //   return servicios;
-  // }
-
   Future<List<dynamic>> getServicios() async {
     http.Response response = await http.get(url + 'servicios');
-
     if (response.statusCode == 200) {
       print('petición correcta');
-
       final jsonData = jsonDecode(response.body);
       List<dynamic> mapDatos = jsonData;
       return mapDatos;
@@ -42,29 +24,8 @@ class Api {
     }
   }
 
-  // Future<List<Horario>> getHorarios() async {
-  // final prefs = await SharedPreferences.getInstance();
-  // final value = prefs.get('token') ?? 0;
-  // print('RToken read: $value');
-  // var response = await http.get(url + 'horarios');
-  // print('Response status: ${response.statusCode}');
-  // print('Response body: ${response.body}');
-  // var jsonResponse = jsonDecode(response.body);
-  // List<Horario> horarios = [];
-
-  // for (Map i in jsonResponse) {
-  //   horarios.add(Horario.fromMap(i));
-  // }
-  // return horarios;
-  // }
-
   Future<List<dynamic>> getHorarios() async {
-    // final prefs = await SharedPreferences.getInstance();
-    // final value = prefs.get('token') ?? 0;
-    // print('RToken read: $value');
     http.Response response = await http.get(url + 'horarios');
-    // print('Response status: ${response.statusCode}');
-    // print('Response body: ${response.body}');
     if (response.statusCode == 200) {
       print('petición correcta');
       var jsonResponse = jsonDecode(response.body);
@@ -78,6 +39,20 @@ class Api {
     return await http.post(url + apiUrl,
         body: jsonEncode(data), headers: _setHeaders());
   }
+
+
+   insertTokenFCM(String tokenFCM) async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.get('token') ?? 0;
+    print('RToken read: $value');
+    var response = await http.post(url+'fcm', headers: {
+      'Authorization': 'Bearer $value',
+    },body:  {
+      'token': tokenFCM,
+    });
+    print(response.body);
+  }
+
 
   _setHeaders() => {
         'Content-type': 'application/json',

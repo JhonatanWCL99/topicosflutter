@@ -46,7 +46,7 @@ class _NotificacionState extends State<Notificacion>{
   }
 
   update(String token){
-    print("El token es: ${token}");
+    print("----------------------El token es: ${token}");
     textValue = token;
     setState(() {
       

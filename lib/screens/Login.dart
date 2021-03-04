@@ -9,7 +9,25 @@ import 'package:registro_login/screens/screens.dart';
 import 'package:registro_login/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  @override
+  void initState() {
+    var futureToken = getToken();
+    futureToken.then((token) => {
+      if(token!=null){
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Home()))
+      }
+    }
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,12 +41,22 @@ class Login extends StatelessWidget {
         ),
         body: LoginFul());
   }
+  getToken() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('token');
+    return token;
+  }
 }
+
+
+
 
 class LoginFul extends StatefulWidget {
   @override
   StateLogin createState() => StateLogin();
+
 }
+
 
 class StateLogin extends State<LoginFul> {
   bool _isLoading = false;
@@ -168,12 +196,20 @@ class StateLogin extends State<LoginFul> {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
       print(body['token']);
-      // localStorage.setString('user', json.encode(body['user']));
+      insertFCM();
       Navigator.push(
           context, new MaterialPageRoute(builder: (context) => Home()));
     }
     setState(() {
       _isLoading = false;
     });
+  }
+
+
+  insertFCM() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('tokenFCM');
+    Api api = Api();
+    api.insertTokenFCM(token);
   }
 }

@@ -28,14 +28,14 @@ class MyDatabase {
     var dir = await getDatabasesPath();
     var path = dir + "regitro.db";
     var database =
-        await openDatabase(path, version: 1, onCreate: (db, version) {
-              // db.execute(
-              // 'CREATE TABLE datos_basicos (id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
-              // 'ci TEXT not null, nombreYApellido TEXT not null,direccion TEXT not null, ' +
-              // 'estado TEXT not null, imagePerfil TEXT not null, telefono TEXT not null, ' +
-              // 'sexo TEXT not null, tipo TEXT not null)'
-              // );
-              db.execute( 'CREATE TABLE categorias (id INTEGER PRIMARY KEY AUTOINCREMENT, ' + 'nombre TEXT not null)');
+        await openDatabase(path, version: 1, onCreate: (db, version) async {
+              await db.execute(
+               'CREATE TABLE datos_basicos (id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+               'ci TEXT not null, nombreYApellido TEXT not null,direccion TEXT not null, ' +
+               'estado TEXT not null, imagePerfil TEXT not null, telefono TEXT not null, ' +
+               'sexo TEXT not null, tipo TEXT not null)'
+               );
+              await db.execute( 'CREATE TABLE categorias (id INTEGER PRIMARY KEY AUTOINCREMENT, ' + 'nombre TEXT not null)');
 
     });
     return database;
