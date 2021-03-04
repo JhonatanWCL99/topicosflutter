@@ -30,7 +30,7 @@ class DatabaseServicios {
     var database =
         await openDatabase(path, version: 1, onCreate: (db, version) async {
              await db.execute( 'CREATE TABLE servicios (id INTEGER PRIMARY KEY AUTOINCREMENT, ' + 
-              'nombreServi TEXT not null)');
+              'nombreServi TEXT not null,id_servicio INTEGER not null)');
 
     });
     return database;
@@ -55,6 +55,7 @@ class DatabaseServicios {
       (i) => Servicios(
           id: notesMap[i]['id'],
           nombreServi: notesMap[i]['nombreServi'],
+          id_servicio: notesMap[i]["id_servicio"]
       )
     );
   }

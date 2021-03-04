@@ -11,6 +11,8 @@ import 'package:registro_login/DBMOVIL/modelosDB/servicios.dart';
 import 'package:registro_login/pallete.dart';
 import 'package:registro_login/widgets/widgets.dart';
 
+import '../api.dart';
+
 class RegistroAutentificacion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,9 @@ class RegistroAutentificacionFul extends StatefulWidget {
 }
 
 class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
-  TextEditingController nombreUsuario;
-  TextEditingController correo;
-  TextEditingController contrasena;
+  TextEditingController nombreUsuario= TextEditingController();
+  TextEditingController correo= TextEditingController();
+  TextEditingController contrasena= TextEditingController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -135,7 +137,7 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
                     RoundedButton(
                         flatButton: FlatButton(
                               onPressed: () async {  
-                                await _eliminarDatosRegistros();
+                                await _subirDatos();
                               },
                               child: Text(
                                 'Finalizar',
@@ -156,6 +158,48 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
         )
       ],
     );
+  }
+  _subirDatos() async{
+    Api api = Api();
+    DatabaseDatos databaseDatos = DatabaseDatos();
+    List<Empleado> auxDatosE = await databaseDatos.getListDatos();
+    var datos=auxDatosE[0];
+
+    DatabaseServicios databaseServicios = DatabaseServicios();
+    List<Servicios> auxDatosS = await databaseServicios.getListServicios();
+
+    DatabaseHorarios databaseHorarios = DatabaseHorarios();
+    List<HorariosModel> auxDatosH = await databaseHorarios.getListHorarios();
+
+    List<Map<String, dynamic>> horarios=List<Map<String, dynamic>>();
+    for (var i = 0; i < auxDatosH.length; i++) {
+      var horario=auxDatosH[i];
+      var horas=horario.horario.split("-");
+      horarios.add({
+        "dias": horario.dias,
+        "hora_inicio":horas[0],
+        "hora_fin": horas[1],
+        "servicio_id": auxDatosS[i].id_servicio
+      });
+
+    }
+
+
+
+    Map<String, dynamic> map={
+      "nombre": datos.nombreYApellido,
+      "email":correo.text,
+      "password":contrasena.text,
+      "ci": datos.ci,
+      "img_perfil": datos.imagePerfil,
+      "direccion": datos.direccion,
+      "telefono": datos.telefono,
+      "sexo": datos.sexo,
+      "tipo": "T",
+      "servicio_trabajador":horarios,
+    };
+    api.registro(map);
+    _eliminarDatosRegistros();
   }
 
     _eliminarDatosRegistros() async {

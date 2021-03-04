@@ -420,7 +420,7 @@ class StateHorario extends State<Horarios> {
         String cadDia = "";
         for (var j = 0; j < dias.length; j++) {
           if(todosServicios[i][0][j] == true){
-              cadDia = cadDia + dias[j] + "-";
+              cadDia = cadDia + dias[j] + ",";
           } 
         }
         cadDia = removeLast(cadDia);

@@ -58,4 +58,9 @@ class Api {
         'Content-type': 'application/json',
         'Accept': 'application/json',
       };
+
+  Future<void> registro(Map<String,dynamic> map) async {
+    var response = await http.post(url+'register',headers: _setHeaders(),body: jsonEncode(map) );
+    print(response.body);
+  }
 }

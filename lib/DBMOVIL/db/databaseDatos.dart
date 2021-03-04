@@ -61,7 +61,8 @@ class DatabaseDatos {
           nombreYApellido: notesMap[i]['nombreYApellido'],
           direccion: notesMap[i]['direccion'],
           imagePerfil: notesMap[i]['imagePerfil'],
-          telefono: notesMap[i]['telefono']
+          telefono: notesMap[i]['telefono'],
+          sexo: notesMap[i]['sexo']
       )
     );
   }

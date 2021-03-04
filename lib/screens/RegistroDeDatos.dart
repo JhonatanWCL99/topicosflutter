@@ -12,6 +12,7 @@ import 'package:path/path.dart' as Path;
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:registro_login/Validaciones/Validar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistroDeDatos extends StatelessWidget {
   @override
@@ -226,28 +227,7 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
                       RoundedButton(
                         flatButton: FlatButton(
                               onPressed: (){
-                                if(formkey.currentState.validate()){
-                                    formkey.currentState.save();
-                                    final Map<String, dynamic> map = {
-                                      "ci": ci.text,
-                                      "nombreYApellido": nombreYApellido.text,
-                                      "direccion": direccion.text,
-                                      "estado": "a", //activo
-                                      "imagePerfil": "ok",
-                                      "telefono": telefono.text,
-                                      "sexo": _selectSexo,
-                                      "tipo": "t" //trabajador
-                                    };
-                                    if(datosE.isEmpty)
-                                      _myDatabase.insert(map, 'datos_basicos');
-                                    else{
-                                      _myDatabase.delete("datos_basicos", datosE[0]);
-                                      _myDatabase.insert(map, 'datos_basicos');
-                                    }
-                                    
-                                    Navigator.of(context).pushNamed("RegistroServicios");
-
-                                  }
+                              upLoadImage(ci.text, nombreYApellido.text, direccion.text, telefono.text, _selectSexo);
                               },
                               child: Text(
                                 'Continuar',
@@ -301,47 +281,40 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
     }
   }
 
-  Future upLoadImage() async {
+  Future upLoadImage(ci,nombre,direccion,telefono,sexo) async {
     print('images/${Path.basename(image.path)}');
     firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
         .ref()
         .child('images/${Path.basename(image.path)}');
     await ref.putFile(image).whenComplete(() async {
-      await ref.getDownloadURL().then((value) {
+      await ref.getDownloadURL().then((value) async {
         print(value);
+        if(formkey.currentState.validate()){
 
-        final Map<String, dynamic> map = {
-          "nombre": nombre.text,
-          "ci": ci.text,
-          "direccion": direccion.text,
-          "estado": "a", //activo
-          "img_perfil": value,
-          "telefono": telefono.text,
-          "sexo": _selectSexo,
-          "tipo": "t" //trabajador
-        };
+          formkey.currentState.save();
+          final Map<String, dynamic> map = {
+            "ci": ci,
+            "nombreYApellido": nombre,
+            "direccion": direccion,
+            "estado": "a", //activo
+            "imagePerfil": value,
+            "telefono": telefono,
+            "sexo": sexo,
+            "tipo": "t" //trabajador
+          };
+          if(datosE.isEmpty)
+            _myDatabase.insert(map, 'datos_basicos');
+          else{
+            _myDatabase.delete("datos_basicos", datosE[0]);
+            _myDatabase.insert(map, 'datos_basicos');
+          }
+          //upLoadImage();
+          Navigator.of(context).pushNamed("RegistroServicios");
 
-        // _myDatabase.insert(map, 'datos_basicos');
+
+        }
       });
     });
-    /*final uri = Uri.parse("http://192.168.56.1/registro_login/registro.php");
-    var request = http.MultipartRequest("POST", uri);
-    request.fields["nom"] = nombre.text;
-    request.fields["apel"] = apellido.text;
-    request.fields["telf"] = telefono.text;
-    request.fields["dir"] = direccion.text;
-    request.fields["nomUser"] = nombreUsuario.text;
-    request.fields["contra"] = contraUsuario.text;
-
-
-
-    var pic = await http.MultipartFile.fromPath("imagen", image.path);
-    request.files.add(pic);
-    var response = await request.send();
-
-    if(response.statusCode == 200) print("Image upload");
-    else print("Image not upload");*/
-
     setState(() {});
   }
 }

@@ -15,5 +15,6 @@ class HorariosModel{
       'dias': this.dias,
       'horario': this.horario
     };
+
   }
 }

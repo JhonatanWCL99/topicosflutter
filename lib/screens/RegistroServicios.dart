@@ -179,13 +179,12 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
   }
 
   _insertYDeleteSqlite() async {
-   
-    List<dynamic> listaServi = await _getListaServicios();
+    List<Map<String,dynamic>> listaServi = await _getListaServiciosID();
     List<Servicios> auxDatosS = await _myDatabase.getListServicios();
     if(auxDatosS.isEmpty){
       for (var i = 0; i < listaServi.length; i++) {
         if(_selectServicio[i] == true)
-          _myDatabase.insert({'nombreServi': listaServi[i]}, "servicios");
+          _myDatabase.insert({'nombreServi': listaServi[i]['nombre'],'id_servicio': listaServi[i]['id']}, "servicios");
       }
     }else{
       for (var i = 0; i < auxDatosS.length; i++) {
@@ -194,10 +193,9 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
 
       for (var i = 0; i < listaServi.length; i++) {
         if(_selectServicio[i] == true)
-          _myDatabase.insert({'nombreServi': listaServi[i]}, "servicios");
+          _myDatabase.insert({'nombreServi': listaServi[i]['nombre'],'id_servicio': listaServi[i]['id']}, "servicios");
       }
     }
-    
   }
 
   _getListaServicios() async{
@@ -206,6 +204,16 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
     List L = await api.getServicios();
     for(var i = 0; i < L.length; i++){
       listaServicios.add(L[i]['nombre']);
+    }
+    return listaServicios;
+  }
+
+  _getListaServiciosID() async{
+    List<Map<String,dynamic>> listaServicios = List();
+    Api api = Api();
+    List L = await api.getServicios();
+    for(var i = 0; i < L.length; i++){
+      listaServicios.add({'nombre':L[i]['nombre'],'id':L[i]['id']});
     }
     return listaServicios;
   }

@@ -32,7 +32,7 @@ class Empleado{
             'estado': 'activo',
             'imagePerfil': imagePerfil,
             'telefono': telefono,
-            'sexo': 'm',
+            'sexo': sexo,
             'tipo': 'a'
             };
   }
