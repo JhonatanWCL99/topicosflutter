@@ -2,6 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:registro_login/DBMOVIL/db/dataBaseHorarios.dart';
+import 'package:registro_login/DBMOVIL/db/databaseDatos.dart';
+import 'package:registro_login/DBMOVIL/db/databaseServicios.dart';
+import 'package:registro_login/DBMOVIL/modelosDB/empleado.dart';
+import 'package:registro_login/DBMOVIL/modelosDB/horarios.dart';
+import 'package:registro_login/DBMOVIL/modelosDB/servicios.dart';
 import 'package:registro_login/pallete.dart';
 import 'package:registro_login/widgets/widgets.dart';
 
@@ -128,11 +134,13 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
                     ),
                     RoundedButton(
                         flatButton: FlatButton(
-                              onPressed: (){  
+                              onPressed: () async {  
+                                await _eliminarDatosRegistros();
                               },
                               child: Text(
                                 'Finalizar',
                                 style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+
                               ),
                         ),
                     ),
@@ -149,4 +157,23 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
       ],
     );
   }
+
+    _eliminarDatosRegistros() async {
+    DatabaseDatos databaseDatos = DatabaseDatos(); 
+    List<Empleado> auxDatosE = await databaseDatos.getListDatos();
+    databaseDatos.delete('datos_basicos', auxDatosE[0]);
+
+    DatabaseServicios databaseServicios = DatabaseServicios();
+    List<Servicios> auxDatosS = await databaseServicios.getListServicios();
+    for (var i = 0; i < auxDatosS.length; i++) {
+      databaseServicios.delete('servicios', auxDatosS[i]);
+    }
+
+    DatabaseHorarios databaseHorarios = DatabaseHorarios();
+    List<HorariosModel> auxDatosH = await databaseHorarios.getListHorarios();
+    for (var i = 0; i < auxDatosH.length; i++) {
+      databaseHorarios.delete('horarios', auxDatosH[i]);
+    }
+  }
+  
 }

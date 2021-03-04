@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:registro_login/modelos/trabajador.dart';
+import 'package:registro_login/DBMOVIL/db/databaseDatos.dart';
+import 'package:registro_login/DBMOVIL/modelosDB/empleado.dart';
 import 'package:registro_login/pallete.dart';
 import 'package:registro_login/widgets/widgets.dart';
 
@@ -10,7 +11,6 @@ import 'dart:io';
 import 'package:path/path.dart' as Path;
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:registro_login/data/my_database.dart';
 import 'package:registro_login/Validaciones/Validar.dart';
 
 class RegistroDeDatos extends StatelessWidget {
@@ -36,18 +36,21 @@ class RegistroDeDatosFul extends StatefulWidget {
 }
 
 class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
+  
   List listaSexo = ["M", "F"];
   String _selectSexo;
+
   File image;
-  MyDatabase _myDatabase = MyDatabase();
   final picker = ImagePicker();
   final formkey = GlobalKey<FormState>();
-
   List<Empleado>datosE = [];
-  TextEditingController nombre;
+
+  DatabaseDatos _myDatabase = DatabaseDatos();
+
   TextEditingController ci;
-  TextEditingController telefono;
+  TextEditingController nombre;
   TextEditingController direccion;
+  TextEditingController telefono; 
 
 
   @override
@@ -57,20 +60,21 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
         .then((value) => '..................database intialize');
 
     super.initState();
-    _selectSexo = listaSexo[0];
-  _loadData();
+
     nombre = new TextEditingController();
     telefono = new TextEditingController();
     direccion = new TextEditingController();
     ci = new TextEditingController();
 
-    // _loadData();
+    _loadData();
+    _selectSexo = listaSexo[0];
+    
 
   }
 
   _loadData() async {
-    List<Empleado> auxDatosE = await _myDatabase.notes();
-    print(auxDatosE);
+    List<Empleado> auxDatosE = await _myDatabase.getListDatos();
+    print("En el load: $auxDatosE");
     setState(() {
       datosE = auxDatosE;
     });
@@ -80,12 +84,12 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
   Widget build(BuildContext context) {
     print("length: ${datosE.length}");
     if(datosE.isEmpty) return _formRegistro(ci, nombre, direccion, telefono);
-    int ultimo = datosE.length-1;
-    ci.text = datosE[ultimo].ci;
-    nombre.text = datosE[ultimo].nombreYApellido;
-    direccion.text = datosE[ultimo].direccion;
-    telefono.text = datosE[ultimo].telefono;
+    ci.text = datosE[0].ci;
+    nombre.text = datosE[0].nombreYApellido;
+    direccion.text = datosE[0].direccion;
+    telefono.text = datosE[0].telefono;
     return _formRegistro(ci, nombre, direccion, telefono);
+    
   }
 
   _formRegistro(TextEditingController ci, TextEditingController nombreYApellido,
@@ -192,6 +196,7 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
                           controller: telefono,
                           decoration:
                               buildInputDecoration(Icons.phone_sharp, "Telefono"),
+                          keyboardType: TextInputType.phone,
                           validator: (String value) {
                             if (value.isEmpty)
                               return "Escriba su Telefono PorFavor";
@@ -233,12 +238,15 @@ class StateRegistroDeDatos extends State<RegistroDeDatosFul> {
                                       "sexo": _selectSexo,
                                       "tipo": "t" //trabajador
                                     };
-                                    _myDatabase.insert(map, 'datos_basicos');
-                                    // print(datosE.length );
-                                    // if(datosE.length >=2 )
-                                    //   MyDatabase.delete(datosE[datosE.length-2]);
-                                    // MyDatabase.notes();
-                                    // Navigator.of(context).pushNamed("RegistroServicios");
+                                    if(datosE.isEmpty)
+                                      _myDatabase.insert(map, 'datos_basicos');
+                                    else{
+                                      _myDatabase.delete("datos_basicos", datosE[0]);
+                                      _myDatabase.insert(map, 'datos_basicos');
+                                    }
+                                    
+                                    Navigator.of(context).pushNamed("RegistroServicios");
+
                                   }
                               },
                               child: Text(

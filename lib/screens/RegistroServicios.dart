@@ -2,11 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:registro_login/DBMOVIL/db/databaseServicios.dart';
+import 'package:registro_login/DBMOVIL/modelosDB/servicios.dart';
 import 'package:registro_login/api.dart';
-import 'package:registro_login/modelos/servicio.dart';
 import 'package:registro_login/pallete.dart';
-import 'package:registro_login/data/my_database.dart';
-import 'package:registro_login/screens/screens.dart';
+import 'package:registro_login/screens/RegistroHorarios.dart';
 
 import '../widgets/rounded-button.dart';
 
@@ -33,20 +33,10 @@ class RegistroServiciosFul extends StatefulWidget {
 }
 
 class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerProviderStateMixin*/ {
-  // MyDatabase _myDatabase = MyDatabase();
 
-  List<Servicio>datosS = [];
-  MyDatabase _myDatabase = MyDatabase();
-  List _servicios = List();
-  List<bool> _selectServicio = [];
+  DatabaseServicios _myDatabase = DatabaseServicios(); 
+  List<bool> _selectServicio = List<bool>();
   
-  Future<void> getDatosServicios() async {
-    Api api = Api();
-    List auxServicio = await api.getServicios();
-    setState(() {
-      _servicios = auxServicio;
-    });
-  }
 
   @override
   void initState() {
@@ -55,21 +45,7 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
         .then((value) => '..................database intialize');
 
     super.initState();
-    // _loadData();
-    getDatosServicios();
-    // if(datosS.isEmpty)
-    //   _getServiciosBoolNoGuardado(); //inicializa _selectServicio no guardado
-    // else
-      _getServiciosBoolGuardado(); //inicializa _selectServicio guardado
-  }
-
-  _loadData() async {
-    List<Servicio> auxDatosE = await _myDatabase.notesCategory();
-    print("traer servi: $auxDatosE");
-    setState(() {
-      datosS = auxDatosE;
-    });
-    print("traer datosS: $datosS");
+    _definirValorBool();
   }
 
   @override
@@ -80,7 +56,7 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 40.0),
-            child: _getDrawServicio(),
+            child: _drawServicios(),
           ),
 
           Padding(
@@ -88,13 +64,12 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
             child: RoundedButton(
                       flatButton: FlatButton(
                               onPressed: () async {
-                                // List L = await _myDatabase.notesCategory();
-                                // print(L[1].nombre);
-                                _getServiciosSeleccionados();
-                                // Navigator.of(context).pushNamed("RegistroHorarios",
-                                //                                 arguments: ServiciosSeleccionados(
-                                //                                   servicios: [L[0],L[1], L[2]]
-                                //                                   ));
+                                List L = await _getServiciosSeleccionados();
+                                _insertYDeleteSqlite();
+                                Navigator.of(context).pushNamed("RegistroHorarios",
+                                                                arguments: ServiciosSeleccionados(
+                                                                  servicios: L
+                                                                  ));
                                 
                               },
                               child: Text(
@@ -109,54 +84,38 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
     );
   }
 
-  _getDrawServicio(){           
+  _drawServicios(){
+      Api api = Api();           
       return Container(
-        height: 40,      
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: _servicios == null ? 0: _servicios.length,
-          itemBuilder: (BuildContext context, index) {
-                // _selectServicio.add(false);
-            return Padding(
-              padding: const EdgeInsets.only(left: 15.0),
-              child: _drawServicios(_servicios, index)
+        height: 40,
+        child: FutureBuilder(   
+        future: api.getServicios(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if(snapshot.hasData){
+            print("Servi fu: ${snapshot.data}");
+
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data == null ? 0: snapshot.data.length,
+              itemBuilder: (BuildContext context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: _getServicios(snapshot.data, index)
+                );
+              },
             );
-          },
+          }else return Text("Esperando...");
+        }
         )
     );
   }
 
 
-  // _getDrawServicio(){           
-  //     return Container(
-  //     height: 40,
-  //     child: FutureBuilder<List>(
-  //         future: _servicios,
-  //         builder:
-  //             (BuildContext context, AsyncSnapshot<List> snapshot) { 
-  //           if (snapshot.hasData) {        
-  //             return ListView.builder(
-  //               scrollDirection: Axis.horizontal,
-  //               itemBuilder: (BuildContext context, index) {
-  //                 if (index < snapshot.data.length){
-  //                     // _selectServicio.add(false);
-  //                   return Padding(
-  //                     padding: const EdgeInsets.only(left: 15.0),
-  //                     child: _drawServicios(snapshot, index)
-  //                   );
-  //                 } return null;
-  //               },
-  //             );
-  //           }else return Text("");
-  //         }),
-  //   );
-  // }
-
-  _drawServicios(List snapshot, i){
+ _getServicios(List servi, i){
     return FilterChip(
       selected: _selectServicio[i],
       label: Text(
-        snapshot[i]['nombre'],
+        servi[i]['nombre'],
         style: TextStyle(color: Colors.white),
       ),
       // avatar: FlutterLogo(),
@@ -173,7 +132,44 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
     );
   }
 
-  _getServiciosGuardado()async {
+  _getServiciosBoolNoGuardados() async {
+    List<dynamic> listaServi = await _getListaServicios();
+    List<bool> listaBool = List();
+    for (var j = 0; j < listaServi.length; j++) {
+        listaBool.add(false);
+    }
+    return listaBool;
+  }
+
+  Future<dynamic> _getServiciosBoolGuardados() async {
+     List<bool> listaBool = List();
+     List<Servicios> auxDatoS = await _myDatabase.getListServicios();
+     List<dynamic> listaServi = await _getListaServicios();
+      int k = 0;
+      for (var j = 0; j < listaServi.length; j++) {
+        if(k < auxDatoS.length){
+          if(listaServi[j] == auxDatoS[k].nombreServi){
+            listaBool.add(true);
+            k++;
+          }else
+            listaBool.add(false);
+        }else  listaBool.add(false);
+      }
+      return listaBool;  
+  }
+
+  _definirValorBool() async {
+    List<Servicios> auxDatoS = await _myDatabase.getListServicios();
+    List<bool> listaBool = List();
+    if(auxDatoS.isEmpty) listaBool = await _getServiciosBoolNoGuardados();
+    else listaBool  = await _getServiciosBoolGuardados();
+
+    setState(() {
+        _selectServicio = listaBool;
+      });
+  }
+
+  _getServiciosSeleccionados()async {
     List<String> L = List();
     List<String> listaServi = await _getListaServicios();
     for (var i = 0; i < listaServi.length; i++) {
@@ -182,58 +178,26 @@ class StateRegistroServicios extends State<RegistroServiciosFul> /*with TickerPr
     return L;
   }
 
-
-  _getServiciosBoolGuardado()async{
-    List<String> L = List();
-      // L.add('Plomeria');
-      // L.add('Jardinería');
-      // L.add('Electricista');
-    List<Servicio> auxDatosE = await _myDatabase.notesCategory();
-    for (var i = 0; i < auxDatosE.length; i++) {
-      L.add(auxDatosE[i].nombre);  
-    }
-    print("Servi: $L");
-    List<bool> listaBool = List();
+  _insertYDeleteSqlite() async {
+   
     List<dynamic> listaServi = await _getListaServicios();
-    int k = 0;
-    for (var j = 0; j < listaServi.length; j++) {
-      if(k < L.length){
-        if(listaServi[j] == L[k]){
-          listaBool.add(true);
-          k++;
-        }else
-          listaBool.add(false);
-      }else  listaBool.add(false);
-    }
-    setState(() {
-      _selectServicio = listaBool;
-    });
-  }
+    List<Servicios> auxDatosS = await _myDatabase.getListServicios();
+    if(auxDatosS.isEmpty){
+      for (var i = 0; i < listaServi.length; i++) {
+        if(_selectServicio[i] == true)
+          _myDatabase.insert({'nombreServi': listaServi[i]}, "servicios");
+      }
+    }else{
+      for (var i = 0; i < auxDatosS.length; i++) {
+        _myDatabase.delete('servicios', auxDatosS[i]);
+      }
 
-  _getServiciosSeleccionados() async {
-    List<String> L = List<String>();
-    List<dynamic> listaServi = await _getListaServicios();
-    for (var i = 0; i < listaServi.length; i++) {
-      if(_selectServicio[i] == true)
-        L.add(listaServi[i]);
+      for (var i = 0; i < listaServi.length; i++) {
+        if(_selectServicio[i] == true)
+          _myDatabase.insert({'nombreServi': listaServi[i]}, "servicios");
+      }
     }
     
-    for (var i = 0; i < L.length; i++) {
-      _myDatabase.insert({"nombre": L[i]}, "categorias");
-    }
-  }
-
-  _getServiciosBoolNoGuardado()async{
-
-    List<bool> listaBool = List();
-    List<dynamic> listaServi = await _getListaServicios();
-
-    for (var j = 0; j < listaServi.length; j++) {
-      listaBool.add(false);
-    }
-    setState(() {
-      _selectServicio = listaBool;
-    });
   }
 
   _getListaServicios() async{

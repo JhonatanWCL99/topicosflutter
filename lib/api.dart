@@ -59,12 +59,8 @@ class Api {
     // }
 
     Future<List<dynamic>> getHorarios() async {
-      // final prefs = await SharedPreferences.getInstance();
-      // final value = prefs.get('token') ?? 0;
-      // print('RToken read: $value');
       http.Response response = await http.get(url + 'horarios');
-      // print('Response status: ${response.statusCode}');
-      // print('Response body: ${response.body}');
+
       if(response.statusCode == 200){
         print('petición correcta');
         var jsonResponse = jsonDecode(response.body);
