@@ -5,6 +5,7 @@ import 'package:registro_login/screens/RegistroDeDatos.dart';
 import 'package:registro_login/screens/RegistroAutentificacion.dart';
 import 'package:registro_login/screens/forgot-password.dart';
 import 'package:registro_login/screens/Login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screens/RegistroMapas.dart';
 import 'screens/screens.dart';
@@ -16,8 +17,16 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  getToken() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('token');
+    return token;
+  }
+
   @override
   Widget build(BuildContext context) {
+   // var token = getToken();
+    // if (token == null) {
     return MaterialApp(
       title: 'Material App',
       initialRoute: "/",
@@ -31,5 +40,8 @@ class MyApp extends StatelessWidget {
         'RegistroAutentificacion': (context) => RegistroAutentificacion()
       },
     );
+    //} else {
+    // return Home();
+    //}
   }
 }
