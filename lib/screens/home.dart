@@ -62,45 +62,39 @@ class _HomeState extends State<Home> {
                     child: Container(
                       width: 320,
                       height: 130,
-                      child: Column(
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Stack(children: [
-                            Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 10, top: 18),
-                                child: Image.asset("assets/logoAppServi.jpg",
-                                    width: 100, height: 80)),
-                            Positioned(
-                              left: 110,
-                              bottom: 92,
-                              child: Operacion.textosEstilosDif(
-                                  "Descripcion: " +
-                                      listaS[index]['descripcion'],
-                                  estilo: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                            Positioned(
-                              left: 120,
-                              top: 30,
-                              child: Operacion.textosEstilosDif(
-                                  "Dirección: " + listaS[index]['ubicacion']),
-                            ),
-                            Positioned(
-                              left: 120,
-                              top: 60,
-                              child: Operacion.textosEstilosDif(
-                                  "Fecha: " + listaS[index]['fecha']),
-                            )
-                          ])
+                          Padding(
+                              padding: const EdgeInsets.only(top: 8, left: 15),
+                              child: Image.network(
+                                  "https://fotografias.lasexta.com/clipping/cmsimages02/2019/11/14/66C024AF-E20B-49A5-8BC3-A21DD22B96E6/58.jpg",
+                                  width: 80)),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, left: 40.0),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Operacion.textosEstilosDif(
+                                      "Nombre: " + listaS[index]['descripcion'],
+                                      estilo: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold)),
+                                  Operacion.textosEstilosDif("Dirección: " +
+                                      listaS[index]['ubicacion']),
+                                  Operacion.textosEstilosDif("Teléfono: " +
+                                      listaS[index]['costo'].toString()),
+                                  Operacion.textosEstilosDif("Turno: " +
+                                      listaS[index]['costo'].toString())
+                                ]),
+                          )
                         ],
                       ),
                       decoration: BoxDecoration(
                         border: Border.all(width: 1, color: Colors.black),
                         borderRadius:
                             const BorderRadius.all(const Radius.circular(20)),
-                        color: Colors.grey[300],
+                        color: Colors.cyan[100],
                       ),
                     ),
                   ),

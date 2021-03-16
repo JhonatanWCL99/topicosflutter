@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:registro_login/widgets/widgets.dart';
 
 import '../operaciones.dart';
+import '../pallete.dart';
 
 class DetalleSolicitud extends StatefulWidget {
   @override
@@ -23,7 +25,27 @@ class _DetalleState extends State<DetalleSolicitud> {
               delegate: SliverChildBuilderDelegate(
                   (BuildContext context, index) => misDatos(context),
                   childCount: 1),
-            )
+            ),
+            Column(children: <Widget>[
+              RoundedButton(
+                flatButton: FlatButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Aceptar',
+                    style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              RoundedButton(
+                flatButton: FlatButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Rechazar',
+                    style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )
+            ])
           ],
         ),
       ),
