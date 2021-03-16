@@ -12,6 +12,24 @@ import 'screens/screens.dart';
 class Api {
   var url = 'https://topicos-web.herokuapp.com/api/';
 
+  Future<List<dynamic>> getSolicitudes() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.get('token') ?? 0;
+    print('RToken read: $value');
+    http.Response response =
+        await http.get(url + 'trabajador/solicitud', headers: {
+      'Authorization': 'Bearer $value',
+    });
+    if (response.statusCode == 200) {
+      print('petición correcta');
+      final jsonData = jsonDecode(response.body);
+      List<dynamic> solicitudes = jsonData;
+      return solicitudes;
+    } else {
+      return null;
+    }
+  }
+
   Future<List<dynamic>> getServicios() async {
     http.Response response = await http.get(url + 'servicios');
     if (response.statusCode == 200) {
@@ -40,27 +58,26 @@ class Api {
         body: jsonEncode(data), headers: _setHeaders());
   }
 
-
-   insertTokenFCM(String tokenFCM) async {
+  insertTokenFCM(String tokenFCM) async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.get('token') ?? 0;
     print('RToken read: $value');
-    var response = await http.post(url+'fcm', headers: {
+    var response = await http.post(url + 'fcm', headers: {
       'Authorization': 'Bearer $value',
-    },body:  {
+    }, body: {
       'token': tokenFCM,
     });
     print(response.body);
   }
-
 
   _setHeaders() => {
         'Content-type': 'application/json',
         'Accept': 'application/json',
       };
 
-  Future<void> registro(Map<String,dynamic> map) async {
-    var response = await http.post(url+'register',headers: _setHeaders(),body: jsonEncode(map) );
+  Future<void> registro(Map<String, dynamic> map) async {
+    var response = await http.post(url + 'register',
+        headers: _setHeaders(), body: jsonEncode(map));
     print(response.body);
   }
 }
