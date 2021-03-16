@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:registro_login/screens/detallesolicitud.dart';
+import 'package:registro_login/widgets/rounded-button.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../api.dart';
 import '../operaciones.dart';
 import '../pallete.dart';
@@ -11,6 +13,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var listaS;
+
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +30,7 @@ class _HomeState extends State<Home> {
         body: createItem());
   }
 
+  @override
   void initState() {
     super.initState();
     refrescar();
@@ -40,6 +45,7 @@ class _HomeState extends State<Home> {
     });
     return null;
   }
+
 
   Widget createItem() {
     return RefreshIndicator(
@@ -81,11 +87,34 @@ class _HomeState extends State<Home> {
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold)),
                                   Operacion.textosEstilosDif("Dirección: " +
-                                      listaS[index]['ubicacion']),
-                                  Operacion.textosEstilosDif("Teléfono: " +
-                                      listaS[index]['costo'].toString()),
-                                  Operacion.textosEstilosDif("Turno: " +
-                                      listaS[index]['costo'].toString())
+                                      listaS[index]['ubicacion'].toString()),
+                              RoundedButton(
+                                flatButton: FlatButton(
+                                  onPressed: () async {
+                                    var latitude=listaS[index]['latitud'];
+                                    var longitude=listaS[index]['longitud'];
+
+                                    var mapSchema = 'geo:$latitude,$longitude';
+
+                                    //String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                                    print(mapSchema);
+                                    if (await canLaunch(mapSchema)) {
+                                    await launch(mapSchema);
+                                    } else {
+                                    throw 'Could not open the map.';
+                                    }
+
+                                  },
+                                  child: Text(
+                                    'Ver ubicacion',
+                                    style:
+                                    kBodyText.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+
+                                  Operacion.textosEstilosDif("Fecha: " +
+                                      listaS[index]['fecha'].toString())
                                 ]),
                           )
                         ],
