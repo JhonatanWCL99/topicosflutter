@@ -14,8 +14,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   var listaS;
 
-
-
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -46,7 +44,6 @@ class _HomeState extends State<Home> {
     return null;
   }
 
-
   Widget createItem() {
     return RefreshIndicator(
       child: ListView.builder(
@@ -54,11 +51,12 @@ class _HomeState extends State<Home> {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed("/DetalleSolicitud",
+                Navigator.of(context).pushNamed("/detalleSolicitud",
                     arguments: SolicitudParam(
+                        id: listaS[index]['id'],
                         descripcion: listaS[index]['descripcion'],
-                        ubicacion: listaS[index]['ubicacion'],
-                        costo: listaS[index]['costo'],
+                        latitud: listaS[index]['latitud'],
+                        longitud: listaS[index]['longitud'],
                         fecha: listaS[index]['fecha']));
               },
               child: Row(
@@ -72,49 +70,45 @@ class _HomeState extends State<Home> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                              padding: const EdgeInsets.only(top: 8, left: 15),
-                              child: Image.network(
-                                  "https://fotografias.lasexta.com/clipping/cmsimages02/2019/11/14/66C024AF-E20B-49A5-8BC3-A21DD22B96E6/58.jpg",
-                                  width: 80)),
-                          Padding(
                             padding: const EdgeInsets.only(top: 10, left: 40.0),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Operacion.textosEstilosDif(
-                                      "Nombre: " + listaS[index]['descripcion'],
+                                      "Solicitud de Trabajo " +
+                                          listaS[index]['id'].toString(),
                                       estilo: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold)),
-                                  Operacion.textosEstilosDif("Dirección: " +
-                                      listaS[index]['ubicacion'].toString()),
-                              RoundedButton(
-                                flatButton: FlatButton(
-                                  onPressed: () async {
-                                    var latitude=listaS[index]['latitud'];
-                                    var longitude=listaS[index]['longitud'];
+                                  Operacion.textosEstilosDif(
+                                      "Fecha: " +
+                                          listaS[index]['fecha'].toString(),
+                                      estilo: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  RaisedButton(
+                                    color: Color(0xff5DBFA6),
+                                    textColor: Colors.black,
+                                    onPressed: () async {
+                                      var latitude = listaS[index]['latitud'];
+                                      var longitude = listaS[index]['longitud'];
 
-                                    var mapSchema = 'geo:$latitude,$longitude';
+                                      var mapSchema =
+                                          'geo:$latitude,$longitude';
 
-                                    //String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-                                    print(mapSchema);
-                                    if (await canLaunch(mapSchema)) {
-                                    await launch(mapSchema);
-                                    } else {
-                                    throw 'Could not open the map.';
-                                    }
-
-                                  },
-                                  child: Text(
-                                    'Ver ubicacion',
-                                    style:
-                                    kBodyText.copyWith(fontWeight: FontWeight.bold),
+                                      //String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                                      print(mapSchema);
+                                      if (await canLaunch(mapSchema)) {
+                                        await launch(mapSchema);
+                                      } else {
+                                        throw 'Could not open the map.';
+                                      }
+                                    },
+                                    child: Text('Ubicacion',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
                                   ),
-                                ),
-                              ),
-
-                                  Operacion.textosEstilosDif("Fecha: " +
-                                      listaS[index]['fecha'].toString())
                                 ]),
                           )
                         ],
