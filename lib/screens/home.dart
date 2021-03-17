@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:registro_login/screens/detallesolicitud.dart';
+import 'package:registro_login/screens/detalleSolicitud.dart';
+// import 'package:registro_login/screens/detallesolicitud.dart';
 import 'package:registro_login/widgets/rounded-button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../api.dart';
@@ -51,7 +52,8 @@ class _HomeState extends State<Home> {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed("/detalleSolicitud",
+                print("ListaS: $listaS");
+                Navigator.of(context).pushNamed("detalleServicio",
                     arguments: SolicitudParam(
                         id: listaS[index]['id'],
                         descripcion: listaS[index]['descripcion'],

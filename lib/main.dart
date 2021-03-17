@@ -4,6 +4,7 @@ import 'package:registro_login/notificacion.dart';
 import 'package:registro_login/notification_provider.dart';
 import 'package:registro_login/screens/RegistroDeDatos.dart';
 import 'package:registro_login/screens/RegistroAutentificacion.dart';
+import 'package:registro_login/screens/detalleSolicitud.dart';
 import 'package:registro_login/screens/forgot-password.dart';
 import 'package:registro_login/screens/Login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,7 +57,8 @@ class _MyAppState extends State<MyApp> {
         'RegistroServicios': (context) => RegistroServicios(),
         'RegistroHorarios': (context) => RegistroHorarios(),
         'RegistroMapas': (context) => RegistroMapas(),
-        'RegistroAutentificacion': (context) => RegistroAutentificacion()
+        'RegistroAutentificacion': (context) => RegistroAutentificacion(),
+        'detalleServicio': (context) => DetalleSolicitud()
       },
     );
   }

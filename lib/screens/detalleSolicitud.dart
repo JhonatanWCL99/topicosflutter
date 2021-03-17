@@ -4,21 +4,21 @@ import 'package:registro_login/widgets/widgets.dart';
 import '../operaciones.dart';
 import '../pallete.dart';
 
-class RecuperarDatos extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-        //Para controlar el boton de retroceso
-        onWillPop: () async {
-          //Con esto se puede controlar el boton de retroceso pero hay un parpadeo cuando se retrocede
-          await Navigator.of(context)
-              .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
-          //Navigator.popAndPushNamed(context, "/");
-          return true;
-        },
-        child: Scaffold(body: DetalleSolicitud()));
-  }
-}
+// class RecuperarDatos extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return WillPopScope(
+//         //Para controlar el boton de retroceso
+//         onWillPop: () async {
+//           //Con esto se puede controlar el boton de retroceso pero hay un parpadeo cuando se retrocede
+//           await Navigator.of(context)
+//               .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+//           //Navigator.popAndPushNamed(context, "/");
+//           return true;
+//         },
+//         child: Scaffold(body: DetalleSolicitud()));
+//   }
+// }
 
 class DetalleSolicitud extends StatefulWidget {
   @override
@@ -28,38 +28,29 @@ class DetalleSolicitud extends StatefulWidget {
 class _DetalleState extends State<DetalleSolicitud> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Material(
-        child: CustomScrollView(
-          slivers: [
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, index) => misDatos(context),
-                  childCount: 1),
-            ),
-            Column(children: <Widget>[
-              RoundedButton(
-                flatButton: FlatButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Aceptar',
-                    style: kBodyText.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              RoundedButton(
-                flatButton: FlatButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Rechazar',
-                    style: kBodyText.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              )
-            ])
-          ],
-        ),
-      ),
+    return Scaffold(
+          appBar:  AppBar(title: Text("Detalle"),),
+          body: misDatos(context)
+            // body: Column(children: <Widget>[
+            //   RoundedButton(
+            //     flatButton: FlatButton(
+            //       onPressed: () {},
+            //       child: Text(
+            //         'Aceptar',
+            //         style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+            //       ),
+            //     ),
+            //   ),
+            //   RoundedButton(
+            //     flatButton: FlatButton(
+            //       onPressed: () {},
+            //       child: Text(
+            //         'Rechazar',
+            //         style: kBodyText.copyWith(fontWeight: FontWeight.bold),
+            //       ),
+            //     ),
+            //   )
+            // ])
     );
   }
 
@@ -68,11 +59,8 @@ class _DetalleState extends State<DetalleSolicitud> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 30.0),
-          child: Operacion.getIconDatos(
-              Icon(Icons.note), "Descripcion: " + arguments.descripcion),
-        ),
+        Operacion.getIconDatos(
+            Icon(Icons.note), "Descripcion: " + arguments.descripcion),
         Operacion.getIconDatos(
             Icon(Icons.location_on), "latitud: " + arguments.latitud),
         Operacion.getIconDatos(
@@ -91,8 +79,8 @@ class SolicitudParam {
   String longitud;
   String costo;
   String fecha;
-  String solicitudid;
-  String servicioid;
+  // String solicitudid;
+  // String servicioid;
 
   SolicitudParam({
     this.id,
@@ -101,7 +89,7 @@ class SolicitudParam {
     this.longitud,
     this.costo,
     this.fecha,
-    this.solicitudid,
-    this.servicioid,
+    // this.solicitudid,
+    // this.servicioid,
   });
 }
