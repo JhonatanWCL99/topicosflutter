@@ -14,6 +14,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var listaS;
+  ScrollController _scrollController = ScrollController();
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,78 +53,63 @@ class _HomeState extends State<Home> {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                print("ListaS: $listaS");
                 Navigator.of(context).pushNamed("detalleServicio",
                     arguments: SolicitudParam(
                         id: listaS[index]['id'],
                         descripcion: listaS[index]['descripcion'],
                         latitud: listaS[index]['latitud'],
                         longitud: listaS[index]['longitud'],
-                        fecha: listaS[index]['fecha']));
+                        fecha: listaS[index]['fecha'],
+                        estado: listaS[index]['estado'],
+                        solicitudid: listaS[index]['estado'],
+                        servicioid: listaS[index]['estado']));
               },
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, top: 20),
-                    child: Container(
-                      width: 320,
-                      height: 130,
+              child: Card(
+                color: Colors.white60,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                elevation: 5,
+                margin: EdgeInsets.only(
+                    top: 10, left: 20.0, right: 25, bottom: 0.10),
+                child: Row(
+                  children: [
+                    Expanded(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 40.0),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Operacion.textosEstilosDif(
-                                      "Solicitud de Trabajo " +
-                                          listaS[index]['id'].toString(),
-                                      estilo: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold)),
-                                  Operacion.textosEstilosDif(
-                                      "Fecha: " +
-                                          listaS[index]['fecha'].toString(),
-                                      estilo: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold)),
-                                  RaisedButton(
-                                    color: Color(0xff5DBFA6),
-                                    textColor: Colors.black,
-                                    onPressed: () async {
-                                      var latitude = listaS[index]['latitud'];
-                                      var longitude = listaS[index]['longitud'];
-
-                                      var mapSchema =
-                                          'geo:$latitude,$longitude';
-
-                                      //String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-                                      print(mapSchema);
-                                      if (await canLaunch(mapSchema)) {
-                                        await launch(mapSchema);
-                                      } else {
-                                        throw 'Could not open the map.';
-                                      }
-                                    },
-                                    child: Text('Ubicacion',
-                                        style: TextStyle(
+                          Container(
+                            width: 220,
+                            height: 100,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Operacion.textosEstilosDif(
+                                        "Solicitud de Trabajo " +
+                                            listaS[index]['id'].toString(),
+                                        estilo: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold)),
-                                  ),
-                                ]),
+                                    Operacion.textosEstilosDif(
+                                        "Fecha: " +
+                                            listaS[index]['fecha'].toString(),
+                                        estilo: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
+                                    Operacion.textosEstilosDif(
+                                        "Estado: " + listaS[index]['estado'],
+                                        estilo: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
+                                  ]),
+                            ),
                           )
                         ],
                       ),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black),
-                        borderRadius:
-                            const BorderRadius.all(const Radius.circular(20)),
-                        color: Colors.cyan[100],
-                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }),

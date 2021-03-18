@@ -10,13 +10,16 @@ class Operacion {
   }
 
   static getIconDatos(Icon icono, String descri) {
-    return Card(
-        child: Row(
-      children: [
-        icono,
-        Text("  "),
-        Text(descri),
-      ],
-    ));
+    return Container(
+      height: 60,
+      child: Card(
+          child: Row(
+        children: [
+          icono,
+          Text("  "),
+          Text(descri),
+        ],
+      )),
+    );
   }
 }

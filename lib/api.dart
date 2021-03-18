@@ -80,4 +80,26 @@ class Api {
         headers: _setHeaders(), body: jsonEncode(map));
     print(response.body);
   }
+
+  static Future<Map<String, dynamic>> responderSolicitud(
+      id, solicitudid, costo, estado) async {
+    http.Response response = await http.post(
+        "https://topicos-web.herokuapp.com/api/trabajador/aceptarrechazar",
+        body: {
+          'detalle_id': id.toString(),
+          'solicitud_id': solicitudid.toString(),
+          'costo': costo,
+          'estado': estado,
+        });
+
+    if (response.statusCode == 200) {
+      print('petición correcta');
+      print(response.statusCode);
+
+      final jsonData = jsonDecode(response.body);
+      return jsonData;
+    } else {
+      return null;
+    }
+  }
 }
