@@ -61,8 +61,8 @@ class _HomeState extends State<Home> {
                         longitud: listaS[index]['longitud'],
                         fecha: listaS[index]['fecha'],
                         estado: listaS[index]['estado'],
-                        solicitudid: listaS[index]['estado'],
-                        servicioid: listaS[index]['estado']));
+                        solicitudid: listaS[index]['solicitud_id'].toString(),
+                        servicioid: listaS[index]['servicio_id'].toString()));
               },
               child: Card(
                 color: Colors.white60,
@@ -91,17 +91,20 @@ class _HomeState extends State<Home> {
                                         estilo: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold)),
+                                    SizedBox(
+                                      height: 7.5,
+                                    ),
                                     Operacion.textosEstilosDif(
                                         "Fecha: " +
                                             listaS[index]['fecha'].toString(),
                                         estilo: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold)),
-                                    Operacion.textosEstilosDif(
-                                        "Estado: " + listaS[index]['estado'],
-                                        estilo: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
+                                    SizedBox(
+                                      height: 7.5,
+                                    ),
+                                    obtenerBotonEstado(
+                                        obtenerEstado(listaS[index]['estado']))
                                   ]),
                             ),
                           )
@@ -115,5 +118,64 @@ class _HomeState extends State<Home> {
           }),
       onRefresh: refrescar,
     );
+  }
+
+  Container obtenerBotonEstado(String estado) {
+    switch (estado) {
+      case "aceptado":
+        return Container(
+          height: 25,
+          child: RaisedButton(
+            color: Colors.blueAccent,
+            child: Text("Aprobado"),
+            onPressed: () {},
+          ),
+        );
+      case "rechazado":
+        return Container(
+          height: 25,
+          child: RaisedButton(
+            color: Colors.redAccent,
+            child: Text("Rechazado"),
+            onPressed: () {},
+          ),
+        );
+      case "pendiente":
+        return Container(
+          height: 25,
+          child: RaisedButton(
+            color: Colors.orangeAccent,
+            child: Text("Pendiente"),
+            onPressed: () {},
+          ),
+        );
+        break;
+      default:
+        return Container(
+          height: 25,
+          child: RaisedButton(
+            color: Colors.black,
+            child: Text(""),
+            onPressed: () {},
+          ),
+        );
+    }
+  }
+
+  String obtenerEstado(String argumento) {
+    argumento = argumento.trim();
+    switch (argumento) {
+      case "p":
+        return "pendiente";
+        break;
+      case "a":
+        return "aceptado";
+        break;
+      case "r":
+        return "rechazado";
+        break;
+      default:
+        return "  ";
+    }
   }
 }
