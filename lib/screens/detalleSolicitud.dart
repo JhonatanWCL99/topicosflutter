@@ -112,7 +112,7 @@ class _DetalleState extends State<DetalleSolicitud> {
           "Estado :",
           style: TextStyle(fontSize: 20, color: Color(0xff5DBFA6)),
         ),
-        Operacion.getIconDatos(Icon(Icons.note), arguments.estado),
+        Operacion.getIconDatos(Icon(Icons.note), arguments.estado.trim()),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Padding(
             padding: const EdgeInsets.all(8.0),

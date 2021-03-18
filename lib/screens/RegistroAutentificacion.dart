@@ -39,6 +39,9 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
   TextEditingController nombreUsuario= TextEditingController();
   TextEditingController correo= TextEditingController();
   TextEditingController contrasena= TextEditingController();
+  TextEditingController confcontrasena= TextEditingController();
+  final formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -55,26 +58,28 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
                   // height: size.width * 0.1,
                   height: 10,
                 ),
-                Column(
+                Form(
+                  key: formkey,
+                child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 40.0),
-                      child: Text("Ingrese su nombre de usuario:",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15),
-                      child: TextFormField(
-                          controller: nombreUsuario,
-                          decoration:
-                              buildInputDecoration(Icons.person, "Nombre"),
-                          validator: (String value) {
-                            if (value.isEmpty)
-                              return "Escriba su Nombre PorFavor";
-                            return null;
-                          }),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(right: 40.0),
+                    //   child: Text("Ingrese su nombre de usuario:",
+                    //       style: TextStyle(
+                    //           fontSize: 20, fontWeight: FontWeight.bold)),
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 15),
+                    //   child: TextFormField(
+                    //       controller: nombreUsuario,
+                    //       decoration:
+                    //           buildInputDecoration(Icons.person, "Nombre"),
+                    //       validator: (String value) {
+                    //         if (value.isEmpty)
+                    //           return "Escriba su Nombre PorFavor";
+                    //         return null;
+                    //       }),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(right: 50.0),
                       child: Text("Ingrese su correo electrónico:",
@@ -88,11 +93,11 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
                         decoration: buildInputDecoration(Icons.email, "Correo"),
                         validator: (String value) {
                           if (value.isEmpty) {
-                            return 'Please a Enter';
+                            return 'Campo vacío';
                           }
                           if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
                               .hasMatch(value)) {
-                            return 'Escriba su Correo PorFavor';
+                            return 'Correo no válido';
                           }
                           return null;
                         },
@@ -108,11 +113,12 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
                       padding: const EdgeInsets.only(bottom: 15),
                       child: TextFormField(
                           controller: contrasena,
+                          obscureText: true,
                           decoration: buildInputDecoration(
                               FontAwesomeIcons.lock, "Contraseña"),
                           validator: (String value) {
                             if (value.isEmpty)
-                              return "Escriba su Contraseña PorFavor";
+                              return "Campo vacío";
                             return null;
                           }),
                     ),
@@ -125,19 +131,26 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 15),
                       child: TextFormField(
-                          controller: contrasena,
+                          controller: confcontrasena,
+                          obscureText: true,
                           decoration: buildInputDecoration(
                               FontAwesomeIcons.lock, "Contraseña"),
                           validator: (String value) {
                             if (value.isEmpty)
-                              return "Escriba su Contraseña PorFavor";
+                              return "Campo vacío";
+                            if(contrasena.text != confcontrasena.text)
+                              return "Las contraseñas no coinciden";
                             return null;
                           }),
                     ),
                     RoundedButton(
                         flatButton: FlatButton(
-                              onPressed: () async {  
-                                await _subirDatos();
+                              onPressed: () async { 
+                                if (formkey.currentState.validate()) {
+                                  // await _subirDatos();
+                                  // await _eliminarDatosRegistros();
+                                  _showSnackbar(context);
+                                }
                               },
                               child: Text(
                                 'Finalizar',
@@ -152,6 +165,7 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
                     // RoundedButton(buttonName: 'Finalizar registro'),
                   ],
                 )
+               )
               ],
             ),
           ),
@@ -159,6 +173,24 @@ class StateRegistroAutentificacion extends State<RegistroAutentificacionFul> {
       ],
     );
   }
+
+ _showSnackbar(BuildContext context){
+    SnackBar snackbar= SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Registro satisfactorio",
+                        style: TextStyle(fontSize: 18,
+                        color: Colors.black
+                        )
+           ),
+        ],
+      ),
+      backgroundColor: Color(0xff5DBFA6) 
+    );
+    Scaffold.of(context).showSnackBar(snackbar);
+  }
+
   _subirDatos() async{
     Api api = Api();
     DatabaseDatos databaseDatos = DatabaseDatos();
